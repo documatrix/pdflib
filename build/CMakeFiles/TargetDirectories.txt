@@ -1,0 +1,2 @@
+/home/gerhard/DocuMatrix/pdf2for/build/src/CMakeFiles/pdf2for.dir
+/home/gerhard/DocuMatrix/pdf2for/build/src/CMakeFiles/pdf2for_preprocessed.dir

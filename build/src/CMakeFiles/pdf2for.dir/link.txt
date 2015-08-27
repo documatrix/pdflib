@@ -1,0 +1,1 @@
+/usr/bin/cc  -g -O3    CMakeFiles/pdf2for.dir/pdf2for.c.o  -o pdf2for  -L/usr/local/lib -rdynamic /usr/local/lib/libdmtestlib-1.0.so -lgio-2.0 -lgobject-2.0 -lgthread-2.0 -lglib-2.0 -lz /usr/local/lib/libopen_dmlib-1.0.so /usr/local/lib/libdm_logger-1.0.so -Wl,-rpath,/usr/local/lib: 
