@@ -48,7 +48,7 @@ testdir: build
 	mkdir -p build/testdir
 
 test: testdir
-	cd build/tests && gtester ./test_dm_logger -k -o ../testdir/ergebnis.xml || exit 0
+	cd build/tests && gtester ./test_pdflib -k -o ../testdir/ergebnis.xml || exit 0
 	cd build && trv ${TRVPARAM} -i testdir/ergebnis.xml
 
 test_quiet: test
