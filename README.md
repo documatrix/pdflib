@@ -1,2 +1,2 @@
-# pdf2for
-This repository contains a tool which can convert pdf files to docTYPE intermediate files (for)
+# pdflib
+This repository contains a library which can be used to read pdf files

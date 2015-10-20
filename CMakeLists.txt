@@ -1,18 +1,20 @@
 ### CMakeLists automatically created with AutoVala
 ### Do not edit
 
-project (pdf2for)
+project (pdflib)
 cmake_minimum_required (VERSION 2.6)
 cmake_policy (VERSION 2.8)
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 option(ICON_UPDATE "Update the icon cache after installing" ON)
 option(BUILD_VALADOC "Build API documentation if Valadoc is available" OFF)
 
-set( PDF2FOR_MAJOR 1 )
-set( PDF2FOR_MINOR 0 )
-set( PDF2FOR_RELEASE 0 )
-set( PDF2FOR_NAME pdf2for-${PDF2FOR_MAJOR}.${PDF2FOR_MINOR} )
-set( PDF2FOR_VERSION ${PDF2FOR_MAJOR}.${PDF2FOR_MINOR}.${PDF2FOR_RELEASE} )
+set( PDFLIB_MAJOR 1 )
+set( PDFLIB_MINOR 0 )
+set( PDFLIB_RELEASE 0 )
+set( PDFLIB_NAME pdflib-${PDFLIB_MAJOR}.${PDFLIB_MINOR} )
+set( PDFLIB_VERSION ${PDFLIB_MAJOR}.${PDFLIB_MINOR}.${PDFLIB_RELEASE} )
+set( DM_POPPLER_NAME dm_poppler-${PDFLIB_MAJOR}.${PDFLIB_MINOR} )
+set( DM_POPPLER_VERSION ${PDFLIB_MAJOR}.${PDFLIB_MINOR}.${PDFLIB_RELEASE} )
 
 set(HAVE_VALADOC OFF)
 if(BUILD_VALADOC)
@@ -28,10 +30,10 @@ endif()
 find_package(PkgConfig)
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
-set(PKG_CONFIG_EXECUTABLE i686-w64-mingw32-pkg-config)
+  set(PKG_CONFIG_EXECUTABLE i686-w64-mingw32-pkg-config)
 endif()
 
-set (MODULES_TO_CHECK glib-2.0 dmtestlib-1.0 gobject-2.0 gio-2.0 gthread-2.0 zlib open_dmlib-1.0 dm_logger-1.0)
+set (MODULES_TO_CHECK glib-2.0 dmtestlib-1.0 gobject-2.0 gio-2.0 gthread-2.0 zlib open_dmlib-1.0 poppler-glib)
 pkg_check_modules(DEPS REQUIRED ${MODULES_TO_CHECK})
 
 set( LIBS )
@@ -54,5 +56,5 @@ if( NOT ${VAPIDIRS} STREQUAL "" )
 endif()
 
 add_subdirectory(src)
-#add_subdirectory(tests)
+add_subdirectory(tests)
 add_subdirectory(doc)

@@ -16,7 +16,14 @@ ifeq "${TARGET_GLIB}" ""
 endif
 CMAKE_VALA_OPTS=--target-glib=${TARGET_GLIB}
 
-CMAKE_OPTS=${CMAKE_PREFIX} -DCMAKE_VALA_OPTS=${CMAKE_VALA_OPTS} -DVAPIDIRS=${VAPIDIRS} -DTARGET_GLIB=${TARGET_GLIB}
+DEBUG ?= 0
+ifeq ($(DEBUG), 1)
+  LOG_DEBUG=true
+else
+  LOG_DEBUG=false
+endif
+
+CMAKE_OPTS=${CMAKE_PREFIX} -DCMAKE_VALA_OPTS=${CMAKE_VALA_OPTS} -DVAPIDIRS=${VAPIDIRS} -DTARGET_GLIB=${TARGET_GLIB} -DLOG_DEBUG=${LOG_DEBUG}
 
 all: linux
 
@@ -24,6 +31,7 @@ copy_files:
 	cp -u -r -p cmake build/
 	cp -u -r -p doc build/
 	cp -u -r -p src build/
+	cp -u -r -p include/* build/src/
 	#cp -u -r -p tests build/
 	cp -u -r -p CMakeLists.txt build/
 	find build/ -name CMakeCache.txt -delete
@@ -48,7 +56,7 @@ testdir: build
 	mkdir -p build/testdir
 
 test: testdir
-	cd build/tests && gtester ./test_dm_logger -k -o ../testdir/ergebnis.xml || exit 0
+	cd build/tests && gtester ./test_pdflib -k -o ../testdir/ergebnis.xml || exit 0
 	cd build && trv ${TRVPARAM} -i testdir/ergebnis.xml
 
 test_quiet: test
