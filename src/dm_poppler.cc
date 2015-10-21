@@ -33,6 +33,7 @@
 #include <UnicodeMap.h>
 #include <PDFDocEncoding.h>
 #include <Error.h>
+#include <ForOutputDev.h>
 
 /* The function to get a wordarray ( horizontal and vertical ) out of the PopplerPage */
 gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
@@ -103,3 +104,53 @@ void dm_poppler_word_destroy( Word *word )
   free( (void*)word->text );
 }
 
+/* The function to get a line_array out of the PopplerPage */
+gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
+{
+  ForOutputDev *for_dev;
+  TextOutputDev *text_dev;
+  Gfx *gfx;
+  GError *error;
+
+  for_dev = new ForOutputDev( );
+  gfx = page->page->createGfx(
+                               for_dev,
+                               72.0, 72.0, 0,
+                               gFalse, /* useMediaBox */
+                               gTrue,  /* Crop */
+                               -1, -1, -1, -1,
+                               gFalse, /* printing */
+                               NULL, NULL
+                             );
+
+  page->page->display( gfx );
+  for_dev->endPage( );
+
+  Path *current_path = for_dev->path_list;
+  int path_number = for_dev->path_number;
+
+  /* no path found */
+  if ( path_number == 0 )
+  {
+    return gFalse;
+  }
+
+  *paths = g_new( ForPath, path_number );
+  *n_paths = path_number;
+
+  ForPath *path_i;
+
+  /* Save the path_linklist into an path_array */
+  for ( int i = 0; i < path_number; i ++ )
+  {
+    path_i = *paths + i;
+    path_i->x = current_path->x;
+    path_i->y = current_path->y;
+    path_i->command = current_path->command;
+    path_i->fill = current_path->fill;
+
+    current_path = current_path->next;
+  }
+
+  return gTrue;
+}

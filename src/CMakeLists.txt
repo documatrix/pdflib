@@ -22,6 +22,7 @@ set (VALA_PACKAGES ${VALA_PACKAGES} zlib)
 
 set (PDFLIB_SOURCES pdflib.vala)
 
+set (DM_POPPLER_SOURCES ${DM_POPPLER_SOURCES} ForOutputDev.cc)
 set (DM_POPPLER_SOURCES ${DM_POPPLER_SOURCES} dm_poppler.cc)
 
 add_library(
@@ -103,6 +104,7 @@ DESTINATION
 # Install dm_poppler header files
 install(
 FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/ForOutputDev.h
   ${CMAKE_CURRENT_BINARY_DIR}/dm_poppler.h
 DESTINATION
   include/${DM_POPPLER_NAME}/

@@ -28,11 +28,31 @@ extern "C" {
     char *text;
   }Word;
 
-  /* The function to get a word array ( horizontal and vertical ) out of the PopplerPage */
+  /* The definition for struct ForPath */
+  typedef struct
+  {
+    unsigned int count;
+    double *x;
+    double *y;
+    int *command;
+    gboolean fill;
+  }ForPath;
+
+  /* The definition for enum PathCommand */
+  enum PathCommand{
+    MOVE_TO = 0,
+    LINE_TO = 1,
+    CURVE_TO = 2
+  };
+
+  /* The function to get a wordarray ( horizontal and vertical ) out of the PopplerPage */
   gboolean get_words( PopplerPage *page, Word **words, guint *n_words );
 
   /* The destroy funtion of the struct word -> no memoryleak */
   void dm_poppler_word_destroy( Word *word );
+
+  /* The function to get a patharray out of the PopplerPage */
+  gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths );
 
 #ifdef __cplusplus
 }
