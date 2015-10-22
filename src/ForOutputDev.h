@@ -27,6 +27,11 @@ struct Path
   int *command;
   bool fill;
   Path *next;
+  GfxRGB color;
+  double opacity;
+  double line_width;
+  int line_cap;
+  int line_join;
 };
 
 class ForOutputDev: public OutputDev
@@ -66,6 +71,12 @@ public:
 
   // the current document
   PDFDoc *doc;
+
+  // the current color
+  GfxRGB current_color;
+  // the current opacity
+  double current_opacity;
+
 
   // the printed path
   Path *path_list;

@@ -10,6 +10,13 @@ add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 find_package (Vala REQUIRED)
 include( UseVala )
 
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
+  include_directories( ${CMAKE_INSTALL_PREFIX}/include/poppler )
+else()
+  include_directories( /usr/include/poppler )
+endif()
+
 set (VALA_PACKAGES ${VALA_PACKAGES} poppler-glib)
 set (VALA_PACKAGES ${VALA_PACKAGES} gio-2.0)
 set (VALA_PACKAGES ${VALA_PACKAGES} glib-2.0)

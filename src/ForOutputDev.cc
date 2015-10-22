@@ -30,41 +30,62 @@ ForOutputDev::~ForOutputDev()
 
 void ForOutputDev::startPage( int pageNum, GfxState *state )
 {
+  printf( "startPage\n" );
+  current_color.r = current_color.g = current_color.b = 0;
 }
 
 void ForOutputDev::endPage( )
 {
 }
 
+void ForOutputDev::fill( GfxState *state )
+{
+  current_opacity = state->getFillOpacity();
+  state->getFillRGB( &current_color );
+  printf( "fill color: %d %d %d\n", current_color.r, current_color.g, current_color.b );
+  doPath( state, true );
+}
 
 void ForOutputDev::stroke( GfxState *state )
 {
+  current_opacity = state->getStrokeOpacity();
+  state->getStrokeRGB( &current_color );
+  printf( "stroke color: %d %d %d\n", current_color.r, current_color.g, current_color.b );
   doPath( state, false );
-}
-
-void ForOutputDev::fill( GfxState *state )
-{
-  doPath( state, true );
 }
 
 void ForOutputDev::doPath( GfxState *state, bool fill )
 {
+  printf( "Do PATH\n" );
   static Path *current_path = path_list;
   GfxPath *path = state->getPath( );
   GfxSubpath *subpath;
   double *x, *y;
 
-  current_path->fill = fill;
   int points_count = 0;
   for ( int i = 0; i < path->getNumSubpaths( ); ++i )
   {
     subpath = path->getSubpath( i );
     points_count += subpath->getNumPoints( );
   }
+  current_path->count = points_count;
+  current_path->fill = fill;
+
+  /* Path Settings */
+  current_path->line_width = state->getLineWidth( );
+  current_path->line_cap   = state->getLineCap( );
+  current_path->line_join  = state->getLineJoin( );
+
+  /* Color */
+  current_path->color.r = current_color.r;
+  current_path->color.g = current_color.g;
+  current_path->color.b = current_color.b;
+  current_path->opacity = current_opacity;
+
+  /* Points */
   current_path->x = (double*)malloc( points_count * sizeof( double* ) );
   current_path->y = (double*)malloc( points_count * sizeof( double* ) );
   current_path->command = (int*)malloc( points_count * sizeof( int* ) );
-  current_path->count = points_count;
   int point_nr = 0;
   for ( int i = 0; i < path->getNumSubpaths( ); ++i )
   {

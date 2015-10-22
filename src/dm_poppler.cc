@@ -35,7 +35,13 @@
 #include <Error.h>
 #include <ForOutputDev.h>
 
-/* The function to get a wordarray ( horizontal and vertical ) out of the PopplerPage */
+/**
+ * This function can be used to read a word array ( horizontal and vertical ) out of the PopplerPage.
+ * @param page The current PopplerPage of the PDF Document.
+ * @param words The word array containing the Rectangle and the word text.
+ * @param n_words The length of the words array.
+ * @return True if the words were found.
+ */
 gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
 {
   TextOutputDev *text_dev;
@@ -104,7 +110,13 @@ void dm_poppler_word_destroy( Word *word )
   free( (void*)word->text );
 }
 
-/* The function to get a line_array out of the PopplerPage */
+/**
+ * This function can be used to read a path array ( horizontal and vertical ) out of the PopplerPage.
+ * @param page The current PopplerPage of the PDF Document.
+ * @param paths The path array containing the the line or curve points.
+ * @param n_paths The length of the paths array.
+ * @return True if the paths were found.
+ */
 gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
 {
   ForOutputDev *for_dev;
@@ -129,7 +141,7 @@ gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
   Path *current_path = for_dev->path_list;
   int path_number = for_dev->path_number;
 
-  /* no path found */
+  /* no paths found */
   if ( path_number == 0 )
   {
     return gFalse;
@@ -144,10 +156,18 @@ gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
   for ( int i = 0; i < path_number; i ++ )
   {
     path_i = *paths + i;
+    path_i->count = current_path->count;
     path_i->x = current_path->x;
     path_i->y = current_path->y;
-    path_i->command = current_path->command;
+    path_i->color.red   = current_path->color.r;
+    path_i->color.green = current_path->color.g;
+    path_i->color.blue  = current_path->color.b;
+    path_i->color.alpha = current_path->opacity;
+    path_i->cmd = (PathCmd*)current_path->command;
     path_i->fill = current_path->fill;
+    path_i->line_weight = current_path->line_width;
+    path_i->line_cap = (LineCap)current_path->line_cap;
+    path_i->line_join = (LineJoin)current_path->line_join;
 
     current_path = current_path->next;
   }

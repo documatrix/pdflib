@@ -21,22 +21,14 @@ extern "C" {
 #include <poppler.h>
 #include <poppler-page.h>
 
-  /* The definition for struct word */
+  /* The definition for the RGBColor*/
   typedef struct
   {
-    double x1, y1, x2, y2, font_size;
-    char *text;
-  }Word;
-
-  /* The definition for struct ForPath */
-  typedef struct
-  {
-    unsigned int count;
-    double *x;
-    double *y;
-    int *command;
-    gboolean fill;
-  }ForPath;
+    int red;
+    int green;
+    int blue;
+    double alpha;
+  }RGBAColor;
 
   /* The definition for enum PathCommand */
   enum PathCommand{
@@ -44,6 +36,46 @@ extern "C" {
     LINE_TO = 1,
     CURVE_TO = 2
   };
+  typedef enum PathCommand PathCmd;
+
+  /* The definition for enum PathCommand */
+  enum LineCaps{
+    CAP_BUTT = 0,
+    CAP_ROUND = 1,
+    CAP_SQUARE = 2
+  };
+  typedef enum LineCaps LineCap;
+
+  /* The definition for enum PathCommand */
+  enum LineJoins{
+    JOIN_MITER = 0,
+    JOIN_ROUND = 1,
+    JOIN_BEVEL = 2
+  };
+  typedef enum LineJoins LineJoin;
+
+  /* The definition for struct ForPath */
+  typedef struct
+  {
+    unsigned int count;
+    double *x;
+    double *y;
+    PathCmd *cmd;
+    gboolean fill;
+    RGBAColor color;
+    double opacity;
+    double line_weight;
+    LineCap line_cap;
+    LineJoin line_join;
+  }ForPath;
+
+  /* The definition for struct word */
+  typedef struct
+  {
+    double x1, y1, x2, y2, font_size;
+    char *text;
+  }Word;
+
 
   /* The function to get a wordarray ( horizontal and vertical ) out of the PopplerPage */
   gboolean get_words( PopplerPage *page, Word **words, guint *n_words );
