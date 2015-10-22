@@ -85,21 +85,29 @@ namespace PDFLibTests
       // GLib.assert( paths[ 1 ].cmd[ 1 ] == PathCmd.LINE_TO );
       // GLib.assert( !paths[ 1 ].fill );
       stdout.printf( "Path count %d\n", paths.length );
-      for ( int i = 0 ; i < paths.length; i ++ )
+
+      stdout.printf( "Path count %d\n", paths.length );
+      foreach ( unowned ForPath path in paths )
       {
-        stdout.printf( "Path: R:%05d,G:%05d,B:%05d A:%lf LineWeight:%lf Fill?%s LineCap:%s LineJoin:%s\n",
-          paths[ i ].color.red,
-          paths[ i ].color.green,
-          paths[ i ].color.blue,
-          paths[ i ].color.alpha,
-          paths[ i ].line_weight,
-          paths[ i ].fill.to_string( ),
-          paths[ i ].line_cap.to_string( ),
-          paths[ i ].line_join.to_string( )
-        );
-        for ( int point_nr = 0 ; point_nr < paths[ i ].count; point_nr ++ )
+        stdout.printf( "Dash Start:%3.2f", path.line_dash.start );
+        for ( int dash_nr = 0; dash_nr < path.line_dash.pattern.length; dash_nr ++ )
         {
-          stdout.printf( "  X%03d Y%03d %s\n", (int)paths[ i ].x[ point_nr ], (int)paths[ i ].y[ point_nr ], paths[ i ].cmd[ point_nr ].to_string( ) );
+          stdout.printf( " |%3.2f", path.line_dash.pattern[ dash_nr ] );
+        }
+        stdout.printf( "\n" );
+        stdout.printf( "Path: R:%05d,G:%05d,B:%05d A:%lf LineWeight:%lf Fill?%s LineCap:%s LineJoin:%s\n",
+          path.color.red,
+          path.color.green,
+          path.color.blue,
+          path.color.alpha,
+          path.line_weight,
+          path.fill.to_string( ),
+          path.line_cap.to_string( ),
+          path.line_join.to_string( )
+        );
+        for ( int point_nr = 0; point_nr < path.x.length; point_nr ++ )
+        {
+          stdout.printf( "  X%03d Y%03d %s\n", (int)path.x[ point_nr ], (int)path.y[ point_nr ], path.cmd[ point_nr ].to_string( ) );
         }
         stdout.printf( "\n" );
       }

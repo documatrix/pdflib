@@ -38,7 +38,15 @@ extern "C" {
   };
   typedef enum PathCommand PathCmd;
 
-  /* The definition for enum PathCommand */
+  /* The definition for the RGBColor*/
+  typedef struct
+  {
+    int length;
+    double *pattern;
+    double start;
+  }LineDash;
+
+  /* The definition for enum LineCaps */
   enum LineCaps{
     CAP_BUTT = 0,
     CAP_ROUND = 1,
@@ -46,7 +54,7 @@ extern "C" {
   };
   typedef enum LineCaps LineCap;
 
-  /* The definition for enum PathCommand */
+  /* The definition for enum LineJoins */
   enum LineJoins{
     JOIN_MITER = 0,
     JOIN_ROUND = 1,
@@ -67,6 +75,7 @@ extern "C" {
     double line_weight;
     LineCap line_cap;
     LineJoin line_join;
+    LineDash line_dash;
   }ForPath;
 
   /* The definition for struct word */

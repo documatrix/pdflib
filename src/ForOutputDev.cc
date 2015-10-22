@@ -76,6 +76,15 @@ void ForOutputDev::doPath( GfxState *state, bool fill )
   current_path->line_cap   = state->getLineCap( );
   current_path->line_join  = state->getLineJoin( );
 
+  /* LineDash */
+  double *dashPattern;
+  int dashLength;
+  double dashStart;
+  state->getLineDash(&dashPattern, &dashLength, &dashStart);
+  current_path->dash_length  = dashLength;
+  current_path->dash_pattern = dashPattern;
+  current_path->dash_start   = dashStart;
+
   /* Color */
   current_path->color.r = current_color.r;
   current_path->color.g = current_color.g;

@@ -32,6 +32,9 @@ struct Path
   double line_width;
   int line_cap;
   int line_join;
+  int dash_length;
+  double *dash_pattern;
+  double dash_start;
 };
 
 class ForOutputDev: public OutputDev

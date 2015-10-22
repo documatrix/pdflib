@@ -80,6 +80,14 @@ namespace DMPoppler
     }
   }
 
+  [CCode (cname="LineDash")]
+  public struct LineDash
+  {
+    [CCode (array_length_cname = "length")]
+    public double[] pattern;
+    public double start;
+  }
+
   [CCode (cname="RGBAColor")]
   public struct RGBAColor
   {
@@ -100,18 +108,21 @@ namespace DMPoppler
     public double font_size;
   }
 
-  [CCode (cname = "ForPath")]
+  [CCode (cname = "ForPath", free_function="dm_poppler_for_path_destroy", destroy_function="")]
   public struct ForPath
   {
-    public uint count;
-    public double *x;
-    public double *y;
-    public PathCmd *cmd;
+    [CCode (array_length_cname = "count", array_length_type = "guint")]
+    public double[] x;
+    [CCode (array_length_cname = "count", array_length_type = "guint")]
+    public double[] y;
+    [CCode (array_length_cname = "count", array_length_type = "guint")]
+    public PathCmd[] cmd;
     public bool fill;
     public RGBAColor color;
     public double line_weight;
     public LineCap line_cap;
     public LineJoin line_join;
+    public LineDash line_dash;
   }
 
   [CCode (cname = "get_words")]

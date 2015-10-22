@@ -166,11 +166,23 @@ gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
     path_i->cmd = (PathCmd*)current_path->command;
     path_i->fill = current_path->fill;
     path_i->line_weight = current_path->line_width;
-    path_i->line_cap = (LineCap)current_path->line_cap;
-    path_i->line_join = (LineJoin)current_path->line_join;
+    path_i->line_cap    = (LineCap)current_path->line_cap;
+    path_i->line_join   = (LineJoin)current_path->line_join;
+    path_i->line_dash.length  =  current_path->dash_length;
+    path_i->line_dash.pattern =  current_path->dash_pattern;
+    path_i->line_dash.start   =  current_path->dash_start;
 
     current_path = current_path->next;
   }
 
   return gTrue;
+}
+
+/* The destroy funtion of the struct for path -> no memoryleak */
+void dm_poppler_for_path_destroy( ForPath *path )
+{
+  free( (void*)path->line_dash.pattern );
+  free( (void*)path->cmd );
+  free( (void*)path->x );
+  free( (void*)path->y );
 }
