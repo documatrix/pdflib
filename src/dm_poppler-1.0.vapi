@@ -28,7 +28,7 @@ namespace DMPoppler
     }
   }
 
-  [CCode (cname="LineCap")]
+  [CCode (cname="DMLineCap")]
   public enum LineCap
   {
     [CCode (cname="CAP_BUTT")]
@@ -54,7 +54,7 @@ namespace DMPoppler
     }
   }
 
-  [CCode (cname="LineJoin")]
+  [CCode (cname="DMLineJoin")]
   public enum LineJoin
   {
     [CCode (cname="JOIN_MITER")]
@@ -106,6 +106,10 @@ namespace DMPoppler
     public double y2;
     public string text;
     public double font_size;
+    public double baseline;
+    public int char_count;
+    [CCode (array_length_cname = "edge_count")]
+    public double[] edges;
   }
 
   [CCode (cname = "ForPath", free_function="dm_poppler_for_path_destroy", destroy_function="")]

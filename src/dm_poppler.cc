@@ -94,6 +94,14 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     word_i->x2 = xMaxA;
     word_i->y2 = yMaxA;
     word_i->font_size = word->getFontSize( );
+    word_i->baseline = word->getBaseline( );
+    word_i->char_count = word->getLength( );
+    word_i->edge_count = word_i->char_count + 1;
+    word_i->edges = (double*)malloc( word_i->edge_count * sizeof( double* ) );
+    for ( int i = 0; i < word_i->edge_count; i ++ )
+    {
+      word_i->edges[ i ] = word->getEdge( i );
+    }
 
     delete myText;
   }
@@ -108,6 +116,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
 void dm_poppler_word_destroy( Word *word )
 {
   free( (void*)word->text );
+  free( (void*)word->edges );
 }
 
 /**
@@ -166,8 +175,8 @@ gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
     path_i->cmd = (PathCmd*)current_path->command;
     path_i->fill = current_path->fill;
     path_i->line_weight = current_path->line_width;
-    path_i->line_cap    = (LineCap)current_path->line_cap;
-    path_i->line_join   = (LineJoin)current_path->line_join;
+    path_i->line_cap    = (DMLineCap)current_path->line_cap;
+    path_i->line_join   = (DMLineJoin)current_path->line_join;
     path_i->line_dash.length  =  current_path->dash_length;
     path_i->line_dash.pattern =  current_path->dash_pattern;
     path_i->line_dash.start   =  current_path->dash_start;

@@ -52,7 +52,7 @@ extern "C" {
     CAP_ROUND = 1,
     CAP_SQUARE = 2
   };
-  typedef enum LineCaps LineCap;
+  typedef enum LineCaps DMLineCap;
 
   /* The definition for enum LineJoins */
   enum LineJoins{
@@ -60,7 +60,7 @@ extern "C" {
     JOIN_ROUND = 1,
     JOIN_BEVEL = 2
   };
-  typedef enum LineJoins LineJoin;
+  typedef enum LineJoins DMLineJoin;
 
   /* The definition for struct ForPath */
   typedef struct
@@ -73,16 +73,19 @@ extern "C" {
     RGBAColor color;
     double opacity;
     double line_weight;
-    LineCap line_cap;
-    LineJoin line_join;
+    DMLineCap line_cap;
+    DMLineJoin line_join;
     LineDash line_dash;
   }ForPath;
 
   /* The definition for struct word */
   typedef struct
   {
-    double x1, y1, x2, y2, font_size;
+    double x1, y1, x2, y2, font_size, baseline;
     char *text;
+    double *edges;
+    int edge_count;
+    int char_count;
   }Word;
 
 
