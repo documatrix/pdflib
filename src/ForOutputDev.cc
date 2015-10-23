@@ -21,6 +21,9 @@ ForOutputDev::ForOutputDev()
 {
   doc = NULL;
   path_number = 0;
+  char_pos = 0;
+  object_pos = 0;
+  current_color.r = current_color.g = current_color.b = 0;
   path_list = new Path;
 }
 
@@ -32,10 +35,124 @@ void ForOutputDev::startPage( int pageNum, GfxState *state )
 {
   printf( "startPage\n" );
   current_color.r = current_color.g = current_color.b = 0;
+  char_pos = 0;
+  object_pos = 0;
 }
 
 void ForOutputDev::endPage( )
 {
+}
+
+void ForOutputDev::restoreState(GfxState *state)
+{
+}
+
+void ForOutputDev::updateFont(GfxState *state)
+{
+}
+
+void ForOutputDev::beginString(GfxState *state, GooString *s)
+{
+}
+
+void ForOutputDev::endString(GfxState *state)
+{
+}
+
+void ForOutputDev::beginActualText(GfxState *state, GooString *text)
+{
+}
+
+void ForOutputDev::endActualText(GfxState *state)
+{
+}
+
+
+void ForOutputDev::drawChar( GfxState *state, double x, double y,
+                             double dx, double dy,
+                             double originX, double originY,
+                             CharCode c, int nBytes, Unicode *u, int uLen )
+{
+  //printf( "Char\n");
+  char_pos += nBytes;
+  object_pos = 0;
+}
+
+void ForOutputDev::incCharCount( int nChars )
+{
+  printf( "Achtung incCharCount wurde aufgerufen wurde nicht getestet!\n" );
+  char_pos += nChars;
+  object_pos = 0;
+}
+
+void ForOutputDev::drawImageMask(GfxState *state, Object *ref, Stream *str,
+                                 int width, int height, GBool invert,
+                                 GBool interpolate, GBool inlineImg)
+{
+  state->getFillRGB( &current_color );
+  printf( "drawImageMask\n" );
+  printf( "fill color: %d %d %d\n", current_color.r, current_color.g, current_color.b );
+  printf( "Height %d, Width %d Position %d\n", width, height, str->getPos( ) );
+  object_pos ++;
+}
+
+void ForOutputDev::setSoftMaskFromImageMask(GfxState *state, Object *ref, Stream *str,
+                                            int width, int height, GBool invert,
+                                            GBool inlineImg, double *baseMatrix)
+{
+  printf( "setSoftMaskFromImageMask\n" );
+}
+
+void ForOutputDev::unsetSoftMaskFromImageMask(GfxState *state, double *baseMatrix)
+{
+  printf( "unsetSoftMaskFromImageMask\n" );
+}
+
+void ForOutputDev::drawImageMaskRegular(GfxState *state, Object *ref, Stream *str,
+                                        int width, int height, GBool invert,
+                                        GBool interpolate, GBool inlineImg)
+{
+  printf( "drawImageMaskRegular\n" );
+}
+
+
+void ForOutputDev::drawImageMaskPrescaled(GfxState *state, Object *ref, Stream *str,
+                                          int width, int height, GBool invert,
+                                          GBool interpolate, GBool inlineImg)
+{
+  printf( "drawImageMaskPrescaled\n" );
+}
+
+void ForOutputDev::drawImage(GfxState *state, Object *ref, Stream *str,
+                            int width, int height, GfxImageColorMap *colorMap,
+                            GBool interpolate, int *maskColors, GBool inlineImg)
+{
+  printf( "drawImage\n" );
+  printf( "Height %d, Width %d Position %d\n", width, height, str->getPos( ) );
+  object_pos ++;
+}
+
+void ForOutputDev::drawSoftMaskedImage(GfxState *state, Object *ref, Stream *str,
+                                       int width, int height,
+                                       GfxImageColorMap *colorMap,
+                                       GBool interpolate,
+                                       Stream *maskStr,
+                                       int maskWidth, int maskHeight,
+                                       GfxImageColorMap *maskColorMap,
+                                       GBool maskInterpolate)
+{
+  printf( "drawSoftMaskedImage\n" );
+}
+
+void ForOutputDev::drawMaskedImage(GfxState *state, Object *ref, Stream *str,
+                                   int width, int height,
+                                   GfxImageColorMap *colorMap,
+                                   GBool interpolate,
+                                   Stream *maskStr,
+                                   int maskWidth, int maskHeight,
+                                   GBool maskInvert, GBool maskInterpolate)
+{
+  printf( "drawMaskedImage\n" );
 }
 
 void ForOutputDev::fill( GfxState *state )
@@ -72,9 +189,10 @@ void ForOutputDev::doPath( GfxState *state, bool fill )
   current_path->fill = fill;
 
   /* Path Settings */
-  current_path->line_width = state->getLineWidth( );
-  current_path->line_cap   = state->getLineCap( );
-  current_path->line_join  = state->getLineJoin( );
+  current_path->line_width  = state->getLineWidth( );
+  current_path->line_cap    = state->getLineCap( );
+  current_path->line_join   = state->getLineJoin( );
+  current_path->miter_limit = state->getMiterLimit( );
 
   /* LineDash */
   double *dashPattern;
@@ -82,7 +200,11 @@ void ForOutputDev::doPath( GfxState *state, bool fill )
   double dashStart;
   state->getLineDash(&dashPattern, &dashLength, &dashStart);
   current_path->dash_length  = dashLength;
-  current_path->dash_pattern = dashPattern;
+  current_path->dash_pattern = (double*)malloc( dashLength * sizeof( double* ) );
+  for ( int i = 0; i < dashLength; ++i )
+  {
+    current_path->dash_pattern[ i ] = dashPattern[ i ];
+  }
   current_path->dash_start   = dashStart;
 
   /* Color */
@@ -124,7 +246,10 @@ void ForOutputDev::doPath( GfxState *state, bool fill )
       current_path->y[ point_nr ] = subpath->getY( sub_nr );
     }
   }
+  current_path->object_pos = object_pos;
+  current_path->char_pos = char_pos;
   path_number ++;
+  object_pos ++;
   current_path->next = new Path;
   current_path = current_path->next;
 }

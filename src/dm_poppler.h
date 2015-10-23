@@ -76,6 +76,9 @@ extern "C" {
     DMLineCap line_cap;
     DMLineJoin line_join;
     LineDash line_dash;
+    double miter_limit;
+    int char_pos;
+    int object_pos;
   }ForPath;
 
   /* The definition for struct word */
@@ -97,6 +100,9 @@ extern "C" {
 
   /* The function to get a patharray out of the PopplerPage */
   gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths );
+
+  /* The destroy funtion of the struct word -> no memoryleak */
+  void dm_poppler_for_path_destroy( ForPath *path );
 
 #ifdef __cplusplus
 }

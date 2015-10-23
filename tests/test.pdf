@@ -55,6 +55,20 @@ stream
 % Position: /home/daniel/Daniel/Workspace/appl/Project/output1.sty, line 4
 0 Tc
 /F1 10 Tf
+
+1.0 0.0 0.0 RG
+0.5 0.75 1.0 rg
+[4 4 ] 0 d
+1 w
+0 328.5 m
+200 328.5 l
+250 100 300 700 400 300 c
+0 400.5 m
+200 400.5 l
+200 500.5 l
+10 w
+B
+
 BT
 100 778 Td
 (links) Tj
@@ -99,25 +113,9 @@ BT
 453.95001 328 Td
 (mitten) Tj
 ET
-BT
-483.91 328 Td
-(text) Tj
-ET
-1.0 0.0 0.0 RG
-0.5 0.75 1.0 rg
-[4 4 ] 0 d
-1 w
-0 328.5 m
-200 328.5 l
-250 100 300 700 400 300 c
-0 400.5 m
-200 400.5 l
-200 500.5 l
-10 w
-B
 
 1 0 0 RG
-[4 5 ] 0 d
+[3 10 ] 2 d
 1 w
 400 328.5 m
 450 328.5 l
@@ -125,6 +123,11 @@ B
 450 450.5 l
 15 w
 S
+
+BT
+483.91 328 Td
+(text) Tj
+ET
 
 
 endstream

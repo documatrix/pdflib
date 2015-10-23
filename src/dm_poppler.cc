@@ -87,7 +87,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     char* myString = strdup( myText->getCString( ) );
 
     word_i = *words + i;
-
+    printf( "Text, %s, Pos %d \n", myString, word->getCharPos( ) );
     word_i->text = myString;
     word_i->x1 = xMinA;
     word_i->y1 = yMinA;
@@ -165,21 +165,32 @@ gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
   for ( int i = 0; i < path_number; i ++ )
   {
     path_i = *paths + i;
+
+    /* Path Points */
     path_i->count = current_path->count;
     path_i->x = current_path->x;
     path_i->y = current_path->y;
+    path_i->cmd = (PathCmd*)current_path->command;
+
+    /* Path Settings */
     path_i->color.red   = current_path->color.r;
     path_i->color.green = current_path->color.g;
     path_i->color.blue  = current_path->color.b;
     path_i->color.alpha = current_path->opacity;
-    path_i->cmd = (PathCmd*)current_path->command;
-    path_i->fill = current_path->fill;
+    path_i->fill        = current_path->fill;
     path_i->line_weight = current_path->line_width;
     path_i->line_cap    = (DMLineCap)current_path->line_cap;
     path_i->line_join   = (DMLineJoin)current_path->line_join;
-    path_i->line_dash.length  =  current_path->dash_length;
-    path_i->line_dash.pattern =  current_path->dash_pattern;
-    path_i->line_dash.start   =  current_path->dash_start;
+    path_i->miter_limit = current_path->miter_limit;
+
+    /* LineDash */
+    path_i->line_dash.length  = current_path->dash_length;
+    path_i->line_dash.pattern = current_path->dash_pattern;
+    path_i->line_dash.start   = current_path->dash_start;
+
+    /* Object Sortierung */
+    path_i->char_pos   = current_path->char_pos;
+    path_i->object_pos = current_path->object_pos;
 
     current_path = current_path->next;
   }

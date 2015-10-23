@@ -112,7 +112,7 @@ namespace DMPoppler
     public double[] edges;
   }
 
-  [CCode (cname = "ForPath", free_function="dm_poppler_for_path_destroy", destroy_function="")]
+  [CCode (cname = "ForPath")]
   public struct ForPath
   {
     [CCode (array_length_cname = "count", array_length_type = "guint")]
@@ -127,6 +127,9 @@ namespace DMPoppler
     public LineCap line_cap;
     public LineJoin line_join;
     public LineDash line_dash;
+    public double miter_limit;
+    public int char_pos;
+    public int object_pos;
   }
 
   [CCode (cname = "get_words")]

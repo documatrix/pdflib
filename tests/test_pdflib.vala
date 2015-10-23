@@ -66,7 +66,7 @@ namespace PDFLibTests
    */
   public static void test_f_get_paths( )
   {
-    File test_pdf = File.new_for_path( "../tests/test.pdf" );
+    File test_pdf = File.new_for_path( "../tests/test_new.pdf" );
     try
     {
       string uri = test_pdf.get_uri( );
@@ -76,26 +76,26 @@ namespace PDFLibTests
       Page page1 = document.get_page( 0 );
       ForPath[] paths = null;
       GLib.assert( DMPoppler.get_paths( page1, out paths ) );
-      // GLib.assert( paths.length == 2 );
-      // GLib.assert( paths[ 0 ].count == 7 );
+      // GLib.assert( paths.length == 3 );
+      // GLib.assert( paths[ 0 ].x.length == 8 );
       // GLib.assert( paths[ 0 ].line_weight < 11 );
       // GLib.assert( paths[ 0 ].line_weight > 9 );
-      // GLib.assert( (int)paths[ 1 ].x[ 1 ] == 450 );
-      // GLib.assert( (int)paths[ 1 ].y[ 1 ] == 328 );
-      // GLib.assert( paths[ 1 ].cmd[ 1 ] == PathCmd.LINE_TO );
-      // GLib.assert( !paths[ 1 ].fill );
-      stdout.printf( "Path count %d\n", paths.length );
+      // GLib.assert( (int)paths[ 2 ].x[ 1 ] == 450 );
+      // GLib.assert( (int)paths[ 2 ].y[ 1 ] == 328 );
+      // GLib.assert( paths[ 2 ].cmd[ 1 ] == PathCmd.LINE_TO );
+      // GLib.assert( !paths[ 2 ].fill );
 
       stdout.printf( "Path count %d\n", paths.length );
       foreach ( unowned ForPath path in paths )
       {
-        stdout.printf( "Dash Start:%3.2f", path.line_dash.start );
+        stdout.printf( "Path: CharPosition:%d, ObjectPosition:%d\n", path.char_pos, path.object_pos );
+        stdout.printf( "  Dash Start:%3.2f Pattern:", path.line_dash.start );
         for ( int dash_nr = 0; dash_nr < path.line_dash.pattern.length; dash_nr ++ )
         {
           stdout.printf( " |%3.2f", path.line_dash.pattern[ dash_nr ] );
         }
         stdout.printf( "\n" );
-        stdout.printf( "Path: R:%05d,G:%05d,B:%05d A:%lf LineWeight:%lf Fill?%s LineCap:%s LineJoin:%s\n",
+        stdout.printf( "  R:%05d,G:%05d,B:%05d,A:%lf LineWeight:%lf Fill:%s LineCap:%s LineJoin:%s MiterLimit:%f\n",
           path.color.red,
           path.color.green,
           path.color.blue,
@@ -103,7 +103,8 @@ namespace PDFLibTests
           path.line_weight,
           path.fill.to_string( ),
           path.line_cap.to_string( ),
-          path.line_join.to_string( )
+          path.line_join.to_string( ),
+          path.miter_limit
         );
         for ( int point_nr = 0; point_nr < path.x.length; point_nr ++ )
         {
