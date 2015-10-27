@@ -1,4 +1,0 @@
-# Hashes of file build rules.
-db3304bc7d64a77caf7f315f42dcef50 src/CMakeFiles/pdf2for_preprocessed
-f691c94165300b879da13a05667fd296 src/pdf2for.c
-48838ae43e6ad575d5fd26409b29f931 src/pdf2for.vala
