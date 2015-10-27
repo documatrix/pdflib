@@ -24,7 +24,7 @@ copy_files:
 	cp -u -r -p cmake build/
 	cp -u -r -p doc build/
 	cp -u -r -p src build/
-	cp -u -r -p tests build/
+	#cp -u -r -p tests build/
 	cp -u -r -p CMakeLists.txt build/
 	find build/ -name CMakeCache.txt -delete
 
