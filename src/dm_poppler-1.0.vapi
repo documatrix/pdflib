@@ -97,6 +97,15 @@ namespace DMPoppler
     public double alpha;
   }
 
+  [CCode (cname="Rectangle")]
+  public struct ForRectangle
+  {
+    public double x1;
+    public double x2;
+    public double y1;
+    public double y2;
+  }
+
   [CCode (cname = "Word")]
   public struct Word
   {
@@ -128,6 +137,7 @@ namespace DMPoppler
     public LineJoin line_join;
     public LineDash line_dash;
     public double miter_limit;
+    public ForRectangle clip;
     public int char_pos;
     public int object_pos;
   }

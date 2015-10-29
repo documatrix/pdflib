@@ -66,7 +66,8 @@ namespace PDFLibTests
    */
   public static void test_f_get_paths( )
   {
-    File test_pdf = File.new_for_path( "../tests/test_new.pdf" );
+    //repair_template oder test_new
+    File test_pdf = File.new_for_path( "../tests/test_with_img.pdf" );
     try
     {
       string uri = test_pdf.get_uri( );
@@ -95,7 +96,7 @@ namespace PDFLibTests
           stdout.printf( " |%3.2f", path.line_dash.pattern[ dash_nr ] );
         }
         stdout.printf( "\n" );
-        stdout.printf( "  R:%05d,G:%05d,B:%05d,A:%lf LineWeight:%lf Fill:%s LineCap:%s LineJoin:%s MiterLimit:%f\n",
+        stdout.printf( "  R:%05d,G:%05d,B:%05d,A:%lf\n  LineWeight:%lf Fill:%s LineCap:%s LineJoin:%s MiterLimit:%f\n",
           path.color.red,
           path.color.green,
           path.color.blue,
@@ -106,9 +107,10 @@ namespace PDFLibTests
           path.line_join.to_string( ),
           path.miter_limit
         );
+        stdout.printf( "  Clip X1: %3.2f, X2: %3.2f, Y1: %3.2f, Y2: %3.2f\n\n", path.clip.x1, path.clip.x2, path.clip.y1, path.clip.y2 );
         for ( int point_nr = 0; point_nr < path.x.length; point_nr ++ )
         {
-          stdout.printf( "  X%03d Y%03d %s\n", (int)path.x[ point_nr ], (int)path.y[ point_nr ], path.cmd[ point_nr ].to_string( ) );
+          stdout.printf( "  X%f Y%f %s\n", path.x[ point_nr ], path.y[ point_nr ], path.cmd[ point_nr ].to_string( ) );
         }
         stdout.printf( "\n" );
       }

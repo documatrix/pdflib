@@ -183,6 +183,13 @@ gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
     path_i->line_join   = (DMLineJoin)current_path->line_join;
     path_i->miter_limit = current_path->miter_limit;
 
+    /* Path Clip */
+    path_i->clip.x1 = current_path->clip_x1;
+    path_i->clip.x2 = current_path->clip_x2;
+    path_i->clip.y1 = current_path->clip_y1;
+    path_i->clip.y2 = current_path->clip_y2;
+
+
     /* LineDash */
     path_i->line_dash.length  = current_path->dash_length;
     path_i->line_dash.pattern = current_path->dash_pattern;

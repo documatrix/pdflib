@@ -30,6 +30,15 @@ extern "C" {
     double alpha;
   }RGBAColor;
 
+  /* The definition for the For Rectangle*/
+  typedef struct
+  {
+    double x1;
+    double x2;
+    double y1;
+    double y2;
+  }Rectangle;
+
   /* The definition for enum PathCommand */
   enum PathCommand{
     MOVE_TO = 0,
@@ -77,6 +86,7 @@ extern "C" {
     DMLineJoin line_join;
     LineDash line_dash;
     double miter_limit;
+    Rectangle clip;
     int char_pos;
     int object_pos;
   }ForPath;

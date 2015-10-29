@@ -36,6 +36,11 @@ struct Path
   double *dash_pattern;
   double dash_start;
 
+  double clip_x1;
+  double clip_x2;
+  double clip_y1;
+  double clip_y2;
+
   int char_pos;
   int object_pos;
   Path *next;
@@ -64,6 +69,14 @@ public:
 
   virtual GBool needCharCount() { return gTrue; }
 
+ // Does this device use tilingPatternFill()?  If this returns false,
+  // tiling pattern fills will be reduced to a series of other drawing
+  // operations.
+  virtual GBool useTilingPatternFill() { return gFalse; }
+
+  // Does this device need to clip pages to the crop box even when the
+  // box is the crop box?
+  virtual GBool needClipToCropBox() { return gTrue; }
 
   //----- initialization and control
 
@@ -131,9 +144,23 @@ public:
                                int maskWidth, int maskHeight,
                                GBool maskInvert, GBool maskInterpolate);
 
+  virtual GBool tilingPatternFill(GfxState *state, Gfx *gfx, Catalog *cat, Object *str,
+                                  double *pmat, int paintType, int tilingType, Dict *resDict,
+                                  double *mat, double *bbox,
+                                  int x0, int y0, int x1, int y1,
+                                  double xStep, double yStep);
+
+  virtual GBool patchMeshShadedFill(GfxState *state, GfxPatchMeshShading *shading);
+
+  virtual GBool gouraudTriangleShadedFill(GfxState *state, GfxGouraudTriangleShading *shading);
+
   //----- path painting
   virtual void stroke( GfxState *state );
   virtual void fill( GfxState *state );
+
+  //----- path clipping
+  virtual void clip( GfxState *state );
+  virtual void eoClip(GfxState *state);
 
   virtual void doPath( GfxState *state, bool fill );
 
@@ -153,6 +180,11 @@ public:
 
   int char_pos;
   int object_pos;
+
+  double clip_x1;
+  double clip_y1;
+  double clip_x2;
+  double clip_y2;
 };
 
 #endif
