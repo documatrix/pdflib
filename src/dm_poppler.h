@@ -20,13 +20,14 @@ extern "C" {
 
 #include <poppler.h>
 #include <poppler-page.h>
+#include <stdint.h>
 
   /* The definition for the RGBColor*/
   typedef struct
   {
-    int red;
-    int green;
-    int blue;
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
     double alpha;
   }RGBAColor;
 
@@ -101,6 +102,18 @@ extern "C" {
     int char_count;
   }Word;
 
+  /* The definition for struct Image */
+  typedef struct
+  {
+    unsigned int id;
+    int64_t file_position;
+    RGBAColor color;
+    int width;
+    int height;
+
+    int char_pos;
+    int object_pos;
+  }ForImage;
 
   /* The function to get a wordarray ( horizontal and vertical ) out of the PopplerPage */
   gboolean get_words( PopplerPage *page, Word **words, guint *n_words );
@@ -109,10 +122,13 @@ extern "C" {
   void dm_poppler_word_destroy( Word *word );
 
   /* The function to get a patharray out of the PopplerPage */
-  gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths );
+  gboolean get_for_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForImage **images, guint *n_images );
 
   /* The destroy funtion of the struct word -> no memoryleak */
   void dm_poppler_for_path_destroy( ForPath *path );
+
+  /* The destroy funtion of the struct word -> no memoryleak */
+  void dm_poppler_for_image_destroy( ForImage *image );
 
 #ifdef __cplusplus
 }

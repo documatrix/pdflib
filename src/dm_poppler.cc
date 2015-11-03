@@ -126,7 +126,7 @@ void dm_poppler_word_destroy( Word *word )
  * @param n_paths The length of the paths array.
  * @return True if the paths were found.
  */
-gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
+gboolean get_for_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForImage **images, guint *n_images )
 {
   ForOutputDev *for_dev;
   TextOutputDev *text_dev;
@@ -150,8 +150,11 @@ gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
   Path *current_path = for_dev->path_list;
   int path_number = for_dev->path_number;
 
-  /* no paths found */
-  if ( path_number == 0 )
+  Image *current_image = for_dev->image_list;
+  int image_number = for_dev->image_nr;
+
+  /* no paths and images found */
+  if ( path_number == 0 && image_number == 0 )
   {
     return gFalse;
   }
@@ -173,10 +176,11 @@ gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
     path_i->cmd = (PathCmd*)current_path->command;
 
     /* Path Settings */
-    path_i->color.red   = current_path->color.r;
-    path_i->color.green = current_path->color.g;
-    path_i->color.blue  = current_path->color.b;
+    path_i->color.red   = current_path->color_red;
+    path_i->color.green = current_path->color_green;
+    path_i->color.blue  = current_path->color_blue;
     path_i->color.alpha = current_path->opacity;
+
     path_i->fill        = current_path->fill;
     path_i->line_weight = current_path->line_width;
     path_i->line_cap    = (DMLineCap)current_path->line_cap;
@@ -202,6 +206,33 @@ gboolean get_paths( PopplerPage *page, ForPath **paths, guint *n_paths )
     current_path = current_path->next;
   }
 
+  *images = g_new( ForImage, image_number );
+  *n_images = image_number;
+
+  ForImage *image_i;
+
+  /* Save the path_linklist into an path_array */
+  for ( int i = 0; i < image_number; i ++ )
+  {
+    image_i = *images + i;
+
+    /* Image Settings */
+    image_i->color.red     = current_image->color_red;
+    image_i->color.green   = current_image->color_green;
+    image_i->color.blue    = current_image->color_blue;
+    image_i->color.alpha   = current_image->opacity;
+    image_i->height        = current_image->height;
+    image_i->width         = current_image->width;
+    image_i->id            = current_image->id;
+    image_i->file_position = current_image->file_pos;
+
+    /* Object Sortierung */
+    image_i->char_pos   = current_image->char_pos;
+    image_i->object_pos = current_image->object_pos;
+
+    current_image = current_image->next;
+  }
+
   return gTrue;
 }
 
@@ -212,4 +243,9 @@ void dm_poppler_for_path_destroy( ForPath *path )
   free( (void*)path->cmd );
   free( (void*)path->x );
   free( (void*)path->y );
+}
+
+/* The destroy funtion of the struct image -> no memoryleak */
+void dm_poppler_for_image_destroy( Image *img )
+{
 }

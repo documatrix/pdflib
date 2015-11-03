@@ -20,12 +20,17 @@
 ForOutputDev::ForOutputDev()
 {
   doc = NULL;
-  path_number = 0;
   char_pos = 0;
   object_pos = 0;
+
   current_color.r = current_color.g = current_color.b = 0;
   clip_x1 = clip_x2 = clip_y1 = clip_y2 = 0;
+
+  path_number = 0;
   path_list = new Path;
+
+  image_nr = 0;
+  image_list = new Image;
 }
 
 ForOutputDev::~ForOutputDev()
@@ -35,10 +40,11 @@ ForOutputDev::~ForOutputDev()
 void ForOutputDev::startPage( int pageNum, GfxState *state )
 {
   printf( "startPage\n" );
-  current_color.r = current_color.g = current_color.b = 0;
-  clip_x1 = clip_x2 = clip_y1 = clip_y2 = 0;
   char_pos = 0;
   object_pos = 0;
+
+  current_color.r = current_color.g = current_color.b = 0;
+  clip_x1 = clip_x2 = clip_y1 = clip_y2 = 0;
 }
 
 void ForOutputDev::endPage( )
@@ -92,10 +98,7 @@ void ForOutputDev::drawImageMask(GfxState *state, Object *ref, Stream *str,
                                  GBool interpolate, GBool inlineImg)
 {
   state->getFillRGB( &current_color );
-  printf( "drawImageMask\n" );
-  printf( "fill color: %d %d %d %f\n", current_color.r, current_color.g, current_color.b, current_opacity );
-  printf( "Height %d, Width %d Position %d\n", width, height, str->getPos( ) );
-  object_pos ++;
+  doImage( state, str, width, height );
 }
 
 void ForOutputDev::setSoftMaskFromImageMask(GfxState *state, Object *ref, Stream *str,
@@ -129,9 +132,7 @@ void ForOutputDev::drawImage(GfxState *state, Object *ref, Stream *str,
                             int width, int height, GfxImageColorMap *colorMap,
                             GBool interpolate, int *maskColors, GBool inlineImg)
 {
-  printf( "drawImage\n" );
-  printf( "Height %d, Width %d Position %d\n", width, height, str->getPos( ) );
-  object_pos ++;
+  doImage( state, str, width, height );
 }
 
 void ForOutputDev::drawSoftMaskedImage(GfxState *state, Object *ref, Stream *str,
@@ -178,14 +179,11 @@ GBool ForOutputDev::gouraudTriangleShadedFill(GfxState *state, GfxGouraudTriangl
 
 void ForOutputDev::clip( GfxState *state )
 {
-  printf( "clip\n" );
   state->getUserClipBBox( &clip_x1, &clip_y1, &clip_x2, &clip_y2 );
-  printf( "getUserClipBBox: %f %f %f %f\n", clip_x1, clip_x2, clip_y1, clip_y2 );
 }
 
 void ForOutputDev::eoClip( GfxState *state )
 {
-  printf( "clip-eo\n" );
   clip_x1 = clip_x2 = clip_y1 = clip_y2 = 0;
 }
 
@@ -193,7 +191,6 @@ void ForOutputDev::fill( GfxState *state )
 {
   current_opacity = state->getFillOpacity();
   state->getFillRGB( &current_color );
-  printf( "fill color: %d %d %d %f\n", current_color.r, current_color.g, current_color.b, current_opacity );
   doPath( state, true );
 }
 
@@ -201,7 +198,6 @@ void ForOutputDev::stroke( GfxState *state )
 {
   current_opacity = state->getStrokeOpacity();
   state->getStrokeRGB( &current_color );
-  printf( "stroke color: %d %d %d %f\n", current_color.r, current_color.g, current_color.b, current_opacity );
   doPath( state, false );
 }
 
@@ -210,7 +206,6 @@ void ForOutputDev::doPath( GfxState *state, bool fill )
   double xMin, yMin, xMax, yMax;
   state->getUserClipBBox(&xMin, &yMin, &xMax, &yMax);
 
-  printf( "Do PATH\n" );
   static Path *current_path = path_list;
   GfxPath *path = state->getPath( );
   GfxSubpath *subpath;
@@ -234,8 +229,8 @@ void ForOutputDev::doPath( GfxState *state, bool fill )
   /* Path clip (upsite down!)*/
   current_path->clip_x1 = clip_x1;
   current_path->clip_x2 = clip_x2;
-  current_path->clip_y1 = state->getPageHeight( ) - clip_y1;
-  current_path->clip_y2 = state->getPageHeight( ) - clip_y2;
+  current_path->clip_y1 = state->getPageHeight( ) - clip_y2;
+  current_path->clip_y2 = state->getPageHeight( ) - clip_y1;
 
   /* LineDash */
   double *dashPattern;
@@ -251,10 +246,10 @@ void ForOutputDev::doPath( GfxState *state, bool fill )
   current_path->dash_start   = dashStart;
 
   /* Color */
-  current_path->color.r = current_color.r;
-  current_path->color.g = current_color.g;
-  current_path->color.b = current_color.b;
-  current_path->opacity = current_opacity;
+  current_path->color_red   = colToByte( current_color.r );
+  current_path->color_green = colToByte( current_color.g );
+  current_path->color_blue  = colToByte( current_color.b );
+  current_path->opacity     = current_opacity;
 
   /* Points */
   current_path->x = (double*)malloc( points_count * sizeof( double* ) );
@@ -287,13 +282,40 @@ void ForOutputDev::doPath( GfxState *state, bool fill )
       /* Set Points (upsite down!)*/
       current_path->x[ point_nr ] = subpath->getX( sub_nr ) - xMin + clip_x1;
       current_path->y[ point_nr ] = state->getPageHeight( ) - ( subpath->getY( sub_nr ) - yMin + clip_y1 );
+      // printf( "oldy %f newy %f pageheight %f yMin %f clip_y1 %f\n", subpath->getY( sub_nr ), current_path->y[ point_nr ], yMin, clip_y1 );
     }
   }
   current_path->object_pos = object_pos;
   current_path->char_pos = char_pos;
+
+  /* Next */
   path_number ++;
   object_pos ++;
   current_path->next = new Path;
   current_path = current_path->next;
 }
 
+void ForOutputDev::doImage( GfxState *state, Stream *str, int width, int height )
+{
+  static Image *current_image = image_list;
+  current_image->file_pos = str->getPos( );
+  current_image->id = image_nr;
+
+  current_image->height = height;
+  current_image->width  = width;
+
+  /* Color */
+  current_image->color_red   = colToByte( current_color.r );
+  current_image->color_green = colToByte( current_color.g );
+  current_image->color_blue  = colToByte( current_color.b );
+  current_image->opacity     = colToByte( current_opacity );
+
+  current_image->object_pos = object_pos;
+  current_image->char_pos = char_pos;
+
+  /* Next */
+  image_nr ++;
+  object_pos ++;
+  current_image->next = new Image;
+  current_image = current_image->next;
+}

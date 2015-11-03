@@ -8,6 +8,7 @@
 #define FOROUTPUTDEV_H
 
 #include <OutputDev.h>
+#include <stdint.h>
 
 class PDFDoc;
 class GfxState;
@@ -26,7 +27,9 @@ struct Path
   double *x, *y;
   int *command;
   bool fill;
-  GfxRGB color;
+  uint8_t color_red;
+  uint8_t color_blue;
+  uint8_t color_green;
   double opacity;
   double line_width;
   int line_cap;
@@ -44,6 +47,23 @@ struct Path
   int char_pos;
   int object_pos;
   Path *next;
+};
+
+/* The definition for struct Image */
+struct Image
+{
+  unsigned int id;
+  int64_t file_pos;
+  uint8_t color_red;
+  uint8_t color_blue;
+  uint8_t color_green;
+  double opacity;
+  int width;
+  int height;
+
+  int char_pos;
+  int object_pos;
+  Image *next;
 };
 
 class ForOutputDev: public OutputDev
@@ -162,7 +182,11 @@ public:
   virtual void clip( GfxState *state );
   virtual void eoClip(GfxState *state);
 
+  //----- save path
   virtual void doPath( GfxState *state, bool fill );
+
+  //----- save image
+  virtual void doImage( GfxState *state, Stream *str, int width, int height );
 
   // the current document
   PDFDoc *doc;
@@ -173,14 +197,17 @@ public:
   double current_opacity;
 
 
-  // the printed path
+  // the printed paths
   Path *path_list;
   // the number of paths
   int path_number;
 
+  // the printed images
+  Image *image_list;
+  unsigned int image_nr;
+
   int char_pos;
   int object_pos;
-
   double clip_x1;
   double clip_y1;
   double clip_x2;

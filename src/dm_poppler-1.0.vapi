@@ -91,9 +91,9 @@ namespace DMPoppler
   [CCode (cname="RGBAColor")]
   public struct RGBAColor
   {
-    public int red;
-    public int green;
-    public int blue;
+    public uint8 red;
+    public uint8 green;
+    public uint8 blue;
     public double alpha;
   }
 
@@ -142,9 +142,22 @@ namespace DMPoppler
     public int object_pos;
   }
 
+  [CCode (cname = "ForImage")]
+  public struct ForImage
+  {
+    public int id;
+    public int file_position;
+    public RGBAColor color;
+    public int height;
+    public int width;
+
+    public int char_pos;
+    public int object_pos;
+  }
+
   [CCode (cname = "get_words")]
   bool get_words( Poppler.Page *poppler_page, [CCode (array_length_cname = "n_words", array_length_pos = 2.1, array_length_type = "guint")] out Word[] words );
 
-  [CCode (cname = "get_paths")]
-  bool get_paths( Poppler.Page *poppler_page, [CCode (array_length_cname = "n_paths", array_length_pos = 2.1, array_length_type = "guint")] out ForPath[] paths );
+  [CCode (cname = "get_for_elements")]
+  bool get_for_elements( Poppler.Page *poppler_page, [CCode (array_length_cname = "n_paths", array_length_pos = 2.1, array_length_type = "guint")] out ForPath[] paths, [CCode (array_length_cname = "n_images", array_length_pos = 4.1, array_length_type = "guint")] out ForImage[] images );
 }

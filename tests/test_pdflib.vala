@@ -66,7 +66,7 @@ namespace PDFLibTests
    */
   public static void test_f_get_paths( )
   {
-    //repair_template oder test_new
+    //repair_template oder test_with_img
     File test_pdf = File.new_for_path( "../tests/test_with_img.pdf" );
     try
     {
@@ -76,7 +76,8 @@ namespace PDFLibTests
 
       Page page1 = document.get_page( 0 );
       ForPath[] paths = null;
-      GLib.assert( DMPoppler.get_paths( page1, out paths ) );
+      ForImage[] images = null;
+      GLib.assert( DMPoppler.get_for_elements( page1, out paths, out images ) );
       // GLib.assert( paths.length == 3 );
       // GLib.assert( paths[ 0 ].x.length == 8 );
       // GLib.assert( paths[ 0 ].line_weight < 11 );
@@ -96,7 +97,7 @@ namespace PDFLibTests
           stdout.printf( " |%3.2f", path.line_dash.pattern[ dash_nr ] );
         }
         stdout.printf( "\n" );
-        stdout.printf( "  R:%05d,G:%05d,B:%05d,A:%lf\n  LineWeight:%lf Fill:%s LineCap:%s LineJoin:%s MiterLimit:%f\n",
+        stdout.printf( "  R%03u,G:%03u,B:%03u,A:%lf\n  LineWeight:%lf Fill:%s LineCap:%s LineJoin:%s MiterLimit:%f\n",
           path.color.red,
           path.color.green,
           path.color.blue,
@@ -112,6 +113,25 @@ namespace PDFLibTests
         {
           stdout.printf( "  X%f Y%f %s\n", path.x[ point_nr ], path.y[ point_nr ], path.cmd[ point_nr ].to_string( ) );
         }
+        stdout.printf( "\n" );
+      }
+
+      stdout.printf( "Image count %d\n", paths.length );
+      foreach ( unowned ForImage img in images )
+      {
+        stdout.printf( "Image: CharPosition:%d, ObjectPosition:%d\n", img.char_pos, img.object_pos );
+        stdout.printf( "  ID:%d, FilePosition:%lld, Width:%d, Height:%d\n",
+          img.id,
+          img.file_position,
+          img.width,
+          img.height
+        );
+        stdout.printf( "  R:%03u,G:%03u,B:%03u,A:%lf\n",
+          img.color.red,
+          img.color.green,
+          img.color.blue,
+          img.color.alpha
+        );
         stdout.printf( "\n" );
       }
     }
