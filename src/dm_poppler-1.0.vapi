@@ -150,6 +150,7 @@ namespace DMPoppler
     public RGBAColor color;
     public int height;
     public int width;
+    public ForRectangle area;
 
     public int char_pos;
     public int object_pos;

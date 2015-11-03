@@ -110,6 +110,7 @@ extern "C" {
     RGBAColor color;
     int width;
     int height;
+    Rectangle area;
 
     int char_pos;
     int object_pos;

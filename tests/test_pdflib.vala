@@ -116,7 +116,7 @@ namespace PDFLibTests
         stdout.printf( "\n" );
       }
 
-      stdout.printf( "Image count %d\n", paths.length );
+      stdout.printf( "Image count %d\n", images.length );
       foreach ( unowned ForImage img in images )
       {
         stdout.printf( "Image: CharPosition:%d, ObjectPosition:%d\n", img.char_pos, img.object_pos );
@@ -131,6 +131,12 @@ namespace PDFLibTests
           img.color.green,
           img.color.blue,
           img.color.alpha
+        );
+        stdout.printf( "  X1: %3.2f, Y1: %3.2f, X2: %3.2f, Y2: %3.2f\n",
+          img.area.x1,
+          img.area.y1,
+          img.area.x2,
+          img.area.y2
         );
         stdout.printf( "\n" );
       }

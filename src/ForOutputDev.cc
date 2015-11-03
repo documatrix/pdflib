@@ -298,6 +298,7 @@ void ForOutputDev::doPath( GfxState *state, bool fill )
 void ForOutputDev::doImage( GfxState *state, Stream *str, int width, int height )
 {
   static Image *current_image = image_list;
+
   current_image->file_pos = str->getPos( );
   current_image->id = image_nr;
 

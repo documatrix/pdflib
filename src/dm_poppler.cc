@@ -133,6 +133,9 @@ gboolean get_for_elements( PopplerPage *page, ForPath **paths, guint *n_paths, F
   Gfx *gfx;
   GError *error;
 
+  GList *mapping, *l;
+  mapping = poppler_page_get_image_mapping( page );
+
   for_dev = new ForOutputDev( );
   gfx = page->page->createGfx(
                                for_dev,
@@ -193,7 +196,6 @@ gboolean get_for_elements( PopplerPage *page, ForPath **paths, guint *n_paths, F
     path_i->clip.y1 = current_path->clip_y1;
     path_i->clip.y2 = current_path->clip_y2;
 
-
     /* LineDash */
     path_i->line_dash.length  = current_path->dash_length;
     path_i->line_dash.pattern = current_path->dash_pattern;
@@ -225,6 +227,23 @@ gboolean get_for_elements( PopplerPage *page, ForPath **paths, guint *n_paths, F
     image_i->width         = current_image->width;
     image_i->id            = current_image->id;
     image_i->file_position = current_image->file_pos;
+
+    PopplerImageMapping *imapping;
+    for ( l = mapping; l; l = g_list_next( l ) )
+    {
+      imapping = (PopplerImageMapping *)l->data;
+      if ( imapping->image_id == image_i->id )
+      {
+        break;
+      }
+    }
+    if ( imapping != NULL )
+    {
+      image_i->area.x1 = imapping->area.x1;
+      image_i->area.y1 = imapping->area.y1;
+      image_i->area.x2 = imapping->area.x2;
+      image_i->area.y2 = imapping->area.y2;
+    }
 
     /* Object Sortierung */
     image_i->char_pos   = current_image->char_pos;
