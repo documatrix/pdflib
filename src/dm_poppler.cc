@@ -126,7 +126,7 @@ void dm_poppler_word_destroy( Word *word )
  * @param n_paths The length of the paths array.
  * @return True if the paths were found.
  */
-gboolean get_for_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForImage **images, guint *n_images )
+gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForImage **images, guint *n_images )
 {
   ForOutputDev *for_dev;
   TextOutputDev *text_dev;
@@ -189,12 +189,6 @@ gboolean get_for_elements( PopplerPage *page, ForPath **paths, guint *n_paths, F
     path_i->line_cap    = (DMLineCap)current_path->line_cap;
     path_i->line_join   = (DMLineJoin)current_path->line_join;
     path_i->miter_limit = current_path->miter_limit;
-
-    /* Path Clip */
-    path_i->clip.x1 = current_path->clip_x1;
-    path_i->clip.x2 = current_path->clip_x2;
-    path_i->clip.y1 = current_path->clip_y1;
-    path_i->clip.y2 = current_path->clip_y2;
 
     /* LineDash */
     path_i->line_dash.length  = current_path->dash_length;

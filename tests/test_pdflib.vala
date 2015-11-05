@@ -108,7 +108,6 @@ namespace PDFLibTests
           path.line_join.to_string( ),
           path.miter_limit
         );
-        stdout.printf( "  Clip X1: %3.2f, X2: %3.2f, Y1: %3.2f, Y2: %3.2f\n\n", path.clip.x1, path.clip.x2, path.clip.y1, path.clip.y2 );
         for ( int point_nr = 0; point_nr < path.x.length; point_nr ++ )
         {
           stdout.printf( "  X%f Y%f %s\n", path.x[ point_nr ], path.y[ point_nr ], path.cmd[ point_nr ].to_string( ) );
