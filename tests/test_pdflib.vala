@@ -77,7 +77,7 @@ namespace PDFLibTests
       Page page1 = document.get_page( 0 );
       ForPath[] paths = null;
       ForImage[] images = null;
-      GLib.assert( DMPoppler.get_for_elements( page1, out paths, out images ) );
+      GLib.assert( DMPoppler.get_elements( page1, out paths, out images ) );
       // GLib.assert( paths.length == 3 );
       // GLib.assert( paths[ 0 ].x.length == 8 );
       // GLib.assert( paths[ 0 ].line_weight < 11 );

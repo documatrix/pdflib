@@ -177,31 +177,28 @@ GBool ForOutputDev::gouraudTriangleShadedFill(GfxState *state, GfxGouraudTriangl
   printf( "gouraudTriangleShadedFill\n" );
 }
 
-void ForOutputDev::clip( GfxState *state )
-{
-  state->getUserClipBBox( &clip_x1, &clip_y1, &clip_x2, &clip_y2 );
-}
-
-void ForOutputDev::eoClip( GfxState *state )
-{
-  clip_x1 = clip_x2 = clip_y1 = clip_y2 = 0;
-}
-
 void ForOutputDev::fill( GfxState *state )
 {
   current_opacity = state->getFillOpacity();
   state->getFillRGB( &current_color );
-  doPath( state, true );
+  doPath( state, FILL );
+}
+
+void ForOutputDev::eoFill( GfxState *state )
+{
+  current_opacity = state->getFillOpacity();
+  state->getFillRGB( &current_color );
+  doPath( state, EOFILL );
 }
 
 void ForOutputDev::stroke( GfxState *state )
 {
   current_opacity = state->getStrokeOpacity();
   state->getStrokeRGB( &current_color );
-  doPath( state, false );
+  doPath( state, STROKE );
 }
 
-void ForOutputDev::doPath( GfxState *state, bool fill )
+void ForOutputDev::doPath( GfxState *state, int fill )
 {
   double xMin, yMin, xMax, yMax;
   state->getUserClipBBox(&xMin, &yMin, &xMax, &yMax);
@@ -225,12 +222,6 @@ void ForOutputDev::doPath( GfxState *state, bool fill )
   current_path->line_cap    = state->getLineCap( );
   current_path->line_join   = state->getLineJoin( );
   current_path->miter_limit = state->getMiterLimit( );
-
-  /* Path clip (upsite down!)*/
-  current_path->clip_x1 = clip_x1;
-  current_path->clip_x2 = clip_x2;
-  current_path->clip_y1 = state->getPageHeight( ) - clip_y2;
-  current_path->clip_y2 = state->getPageHeight( ) - clip_y1;
 
   /* LineDash */
   double *dashPattern;

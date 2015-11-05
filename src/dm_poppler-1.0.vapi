@@ -28,6 +28,32 @@ namespace DMPoppler
     }
   }
 
+  [CCode (cname="PathPaintOp")]
+  public enum PathPaintingOperator
+  {
+    [CCode (cname="STROKE")]
+    STROKE,
+    [CCode (cname="FILL")]
+    FILL,
+    [CCode (cname="EOFILL")]
+    EOFILL;
+
+    public string to_string( )
+    {
+      switch ( this )
+      {
+        case STROKE:
+          return "stroke";
+        case FILL:
+          return "fill";
+        case EOFILL:
+          return "eofill";
+         default:
+          return "Undefined";
+      }
+    }
+  }
+
   [CCode (cname="DMLineCap")]
   public enum LineCap
   {
@@ -130,14 +156,13 @@ namespace DMPoppler
     public double[] y;
     [CCode (array_length_cname = "count", array_length_type = "guint")]
     public PathCmd[] cmd;
-    public bool fill;
+    public PathPaintingOperator fill;
     public RGBAColor color;
     public double line_weight;
     public LineCap line_cap;
     public LineJoin line_join;
     public LineDash line_dash;
     public double miter_limit;
-    public ForRectangle clip;
     public int char_pos;
     public int object_pos;
   }
@@ -159,6 +184,6 @@ namespace DMPoppler
   [CCode (cname = "get_words")]
   bool get_words( Poppler.Page *poppler_page, [CCode (array_length_cname = "n_words", array_length_pos = 2.1, array_length_type = "guint")] out Word[] words );
 
-  [CCode (cname = "get_for_elements")]
-  bool get_for_elements( Poppler.Page *poppler_page, [CCode (array_length_cname = "n_paths", array_length_pos = 2.1, array_length_type = "guint")] out ForPath[] paths, [CCode (array_length_cname = "n_images", array_length_pos = 4.1, array_length_type = "guint")] out ForImage[] images );
+  [CCode (cname = "get_elements")]
+  bool get_elements( Poppler.Page *poppler_page, [CCode (array_length_cname = "n_paths", array_length_pos = 2.1, array_length_type = "guint")] out ForPath[] paths, [CCode (array_length_cname = "n_images", array_length_pos = 4.1, array_length_type = "guint")] out ForImage[] images );
 }

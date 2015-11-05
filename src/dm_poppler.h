@@ -48,6 +48,14 @@ extern "C" {
   };
   typedef enum PathCommand PathCmd;
 
+  /* The definition for enum PathCommand */
+  enum PathPaintingOperator{
+    STROKE = 0,
+    FILL = 1,
+    EOFILL = 2
+  };
+  typedef enum PathPaintingOperator PathPaintOp;
+
   /* The definition for the RGBColor*/
   typedef struct
   {
@@ -79,7 +87,7 @@ extern "C" {
     double *x;
     double *y;
     PathCmd *cmd;
-    gboolean fill;
+    PathPaintOp fill;
     RGBAColor color;
     double opacity;
     double line_weight;
@@ -87,7 +95,6 @@ extern "C" {
     DMLineJoin line_join;
     LineDash line_dash;
     double miter_limit;
-    Rectangle clip;
     int char_pos;
     int object_pos;
   }ForPath;
@@ -123,7 +130,7 @@ extern "C" {
   void dm_poppler_word_destroy( Word *word );
 
   /* The function to get a patharray out of the PopplerPage */
-  gboolean get_for_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForImage **images, guint *n_images );
+  gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForImage **images, guint *n_images );
 
   /* The destroy funtion of the struct word -> no memoryleak */
   void dm_poppler_for_path_destroy( ForPath *path );

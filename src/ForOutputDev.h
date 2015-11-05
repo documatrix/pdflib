@@ -26,7 +26,7 @@ struct Path
   unsigned int count;
   double *x, *y;
   int *command;
-  bool fill;
+  int fill;
   uint8_t color_red;
   uint8_t color_blue;
   uint8_t color_green;
@@ -38,11 +38,6 @@ struct Path
   int dash_length;
   double *dash_pattern;
   double dash_start;
-
-  double clip_x1;
-  double clip_x2;
-  double clip_y1;
-  double clip_y2;
 
   int char_pos;
   int object_pos;
@@ -177,13 +172,10 @@ public:
   //----- path painting
   virtual void stroke( GfxState *state );
   virtual void fill( GfxState *state );
-
-  //----- path clipping
-  virtual void clip( GfxState *state );
-  virtual void eoClip(GfxState *state);
+  virtual void eoFill( GfxState *state );
 
   //----- save path
-  virtual void doPath( GfxState *state, bool fill );
+  virtual void doPath( GfxState *state, int fill );
 
   //----- save image
   virtual void doImage( GfxState *state, Stream *str, int width, int height );
