@@ -103,7 +103,7 @@ namespace PDFLibTests
           path.color.blue,
           path.color.alpha,
           path.line_weight,
-          path.fill.to_string( ),
+          path.path_painting_operator.to_string( ),
           path.line_cap.to_string( ),
           path.line_join.to_string( ),
           path.miter_limit

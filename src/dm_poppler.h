@@ -87,7 +87,7 @@ extern "C" {
     double *x;
     double *y;
     PathCmd *cmd;
-    PathPaintOp fill;
+    PathPaintOp path_painting_operator;
     RGBAColor color;
     double opacity;
     double line_weight;

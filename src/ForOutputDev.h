@@ -26,7 +26,7 @@ struct Path
   unsigned int count;
   double *x, *y;
   int *command;
-  int fill;
+  int path_painting_operator;
   uint8_t color_red;
   uint8_t color_blue;
   uint8_t color_green;

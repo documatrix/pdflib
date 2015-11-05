@@ -184,7 +184,7 @@ gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForIm
     path_i->color.blue  = current_path->color_blue;
     path_i->color.alpha = current_path->opacity;
 
-    path_i->fill        = (PathPaintOp)current_path->fill;
+    path_i->path_painting_operator = (PathPaintOp)current_path->path_painting_operator;
     path_i->line_weight = current_path->line_width;
     path_i->line_cap    = (DMLineCap)current_path->line_cap;
     path_i->line_join   = (DMLineJoin)current_path->line_join;

@@ -198,7 +198,7 @@ void ForOutputDev::stroke( GfxState *state )
   doPath( state, STROKE );
 }
 
-void ForOutputDev::doPath( GfxState *state, int fill )
+void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
 {
   double xMin, yMin, xMax, yMax;
   state->getUserClipBBox(&xMin, &yMin, &xMax, &yMax);
@@ -215,7 +215,7 @@ void ForOutputDev::doPath( GfxState *state, int fill )
     points_count += subpath->getNumPoints( );
   }
   current_path->count = points_count;
-  current_path->fill = fill;
+  current_path->path_painting_operator = path_painting_operator;
 
   /* Path Settings */
   current_path->line_width  = state->getLineWidth( );

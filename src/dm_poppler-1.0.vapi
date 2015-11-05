@@ -156,7 +156,7 @@ namespace DMPoppler
     public double[] y;
     [CCode (array_length_cname = "count", array_length_type = "guint")]
     public PathCmd[] cmd;
-    public PathPaintingOperator fill;
+    public PathPaintingOperator path_painting_operator;
     public RGBAColor color;
     public double line_weight;
     public LineCap line_cap;
