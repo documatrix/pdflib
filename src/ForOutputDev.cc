@@ -99,6 +99,7 @@ void ForOutputDev::drawImageMask(GfxState *state, Object *ref, Stream *str,
                                  GBool interpolate, GBool inlineImg)
 {
   state->getFillRGB( &current_color );
+  current_opacity = state->getFillOpacity( );
   doImage( state, str, width, height );
 }
 
@@ -133,6 +134,7 @@ void ForOutputDev::drawImage(GfxState *state, Object *ref, Stream *str,
                             int width, int height, GfxImageColorMap *colorMap,
                             GBool interpolate, int *maskColors, GBool inlineImg)
 {
+  current_opacity = state->getFillOpacity( );
   doImage( state, str, width, height );
 }
 
@@ -187,7 +189,7 @@ void ForOutputDev::fill( GfxState *state )
 
 void ForOutputDev::eoFill( GfxState *state )
 {
-  current_opacity = state->getFillOpacity();
+  current_opacity = state->getFillOpacity( );
   state->getFillRGB( &current_color );
   doPath( state, EOFILL );
 }
@@ -299,7 +301,7 @@ void ForOutputDev::doImage( GfxState *state, Stream *str, int width, int height 
   current_image->color_red   = colToByte( current_color.r );
   current_image->color_green = colToByte( current_color.g );
   current_image->color_blue  = colToByte( current_color.b );
-  current_image->opacity     = colToByte( current_opacity );
+  current_image->opacity     = current_opacity;
 
   current_image->object_pos = object_pos;
   current_image->char_pos = char_pos;
