@@ -196,6 +196,7 @@ public:
 
   // the printed images
   Image *image_list;
+  Image *current_image;
   unsigned int image_nr;
 
   int char_pos;

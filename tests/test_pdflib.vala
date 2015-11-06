@@ -74,70 +74,73 @@ namespace PDFLibTests
       stdout.printf( "%s\n", uri );
       Document document = new Poppler.Document.from_file( uri, "" );
 
-      Page page1 = document.get_page( 0 );
       ForPath[] paths = null;
       ForImage[] images = null;
-      GLib.assert( DMPoppler.get_elements( page1, out paths, out images ) );
-      // GLib.assert( paths.length == 3 );
-      // GLib.assert( paths[ 0 ].x.length == 8 );
-      // GLib.assert( paths[ 0 ].line_weight < 11 );
-      // GLib.assert( paths[ 0 ].line_weight > 9 );
-      // GLib.assert( (int)paths[ 2 ].x[ 1 ] == 450 );
-      // GLib.assert( (int)paths[ 2 ].y[ 1 ] == 328 );
-      // GLib.assert( paths[ 2 ].cmd[ 1 ] == PathCmd.LINE_TO );
-      // GLib.assert( !paths[ 2 ].fill );
-
-      stdout.printf( "Path count %d\n", paths.length );
-      foreach ( unowned ForPath path in paths )
+      for ( int i = 0; i < document.get_n_pages( ); i ++ )
       {
-        stdout.printf( "Path: CharPosition:%d, ObjectPosition:%d\n", path.char_pos, path.object_pos );
-        stdout.printf( "  Dash Start:%3.2f Pattern:", path.line_dash.start );
-        for ( int dash_nr = 0; dash_nr < path.line_dash.pattern.length; dash_nr ++ )
-        {
-          stdout.printf( " |%3.2f", path.line_dash.pattern[ dash_nr ] );
-        }
-        stdout.printf( "\n" );
-        stdout.printf( "  R%03u,G:%03u,B:%03u,A:%lf\n  LineWeight:%lf Fill:%s LineCap:%s LineJoin:%s MiterLimit:%f\n",
-          path.color.red,
-          path.color.green,
-          path.color.blue,
-          path.color.alpha,
-          path.line_weight,
-          path.path_painting_operator.to_string( ),
-          path.line_cap.to_string( ),
-          path.line_join.to_string( ),
-          path.miter_limit
-        );
-        for ( int point_nr = 0; point_nr < path.x.length; point_nr ++ )
-        {
-          stdout.printf( "  X%f Y%f %s\n", path.x[ point_nr ], path.y[ point_nr ], path.cmd[ point_nr ].to_string( ) );
-        }
-        stdout.printf( "\n" );
-      }
+        Poppler.Page page = document.get_page( i );
+        GLib.assert( DMPoppler.get_elements( page, out paths, out images ) );
+        // GLib.assert( paths.length == 3 );
+        // GLib.assert( paths[ 0 ].x.length == 8 );
+        // GLib.assert( paths[ 0 ].line_weight < 11 );
+        // GLib.assert( paths[ 0 ].line_weight > 9 );
+        // GLib.assert( (int)paths[ 2 ].x[ 1 ] == 450 );
+        // GLib.assert( (int)paths[ 2 ].y[ 1 ] == 328 );
+        // GLib.assert( paths[ 2 ].cmd[ 1 ] == PathCmd.LINE_TO );
+        // GLib.assert( !paths[ 2 ].fill );
 
-      stdout.printf( "Image count %d\n", images.length );
-      foreach ( unowned ForImage img in images )
-      {
-        stdout.printf( "Image: CharPosition:%d, ObjectPosition:%d\n", img.char_pos, img.object_pos );
-        stdout.printf( "  ID:%d, FilePosition:%lld, Width:%d, Height:%d\n",
-          img.id,
-          img.file_position,
-          img.width,
-          img.height
-        );
-        stdout.printf( "  R:%03u,G:%03u,B:%03u,A:%lf\n",
-          img.color.red,
-          img.color.green,
-          img.color.blue,
-          img.color.alpha
-        );
-        stdout.printf( "  X1: %3.2f, Y1: %3.2f, X2: %3.2f, Y2: %3.2f\n",
-          img.area.x1,
-          img.area.y1,
-          img.area.x2,
-          img.area.y2
-        );
-        stdout.printf( "\n" );
+        stdout.printf( "Path count %d\n", paths.length );
+        foreach ( unowned ForPath path in paths )
+        {
+          stdout.printf( "Path: CharPosition:%d, ObjectPosition:%d\n", path.char_pos, path.object_pos );
+          stdout.printf( "  Dash Start:%3.2f Pattern:", path.line_dash.start );
+          for ( int dash_nr = 0; dash_nr < path.line_dash.pattern.length; dash_nr ++ )
+          {
+            stdout.printf( " |%3.2f", path.line_dash.pattern[ dash_nr ] );
+          }
+          stdout.printf( "\n" );
+          stdout.printf( "  R%03u,G:%03u,B:%03u,A:%lf\n  LineWeight:%lf Fill:%s LineCap:%s LineJoin:%s MiterLimit:%f\n",
+            path.color.red,
+            path.color.green,
+            path.color.blue,
+            path.color.alpha,
+            path.line_weight,
+            path.path_painting_operator.to_string( ),
+            path.line_cap.to_string( ),
+            path.line_join.to_string( ),
+            path.miter_limit
+          );
+          for ( int point_nr = 0; point_nr < path.x.length; point_nr ++ )
+          {
+            stdout.printf( "  X%f Y%f %s\n", path.x[ point_nr ], path.y[ point_nr ], path.cmd[ point_nr ].to_string( ) );
+          }
+          stdout.printf( "\n" );
+        }
+
+        stdout.printf( "Image count %d\n", images.length );
+        foreach ( unowned ForImage img in images )
+        {
+          stdout.printf( "Image: CharPosition:%d, ObjectPosition:%d\n", img.char_pos, img.object_pos );
+          stdout.printf( "  ID:%d, FilePosition:%lld, Width:%d, Height:%d\n",
+            img.id,
+            img.file_position,
+            img.width,
+            img.height
+          );
+          stdout.printf( "  R:%03u,G:%03u,B:%03u,A:%lf\n",
+            img.color.red,
+            img.color.green,
+            img.color.blue,
+            img.color.alpha
+          );
+          stdout.printf( "  X1: %3.2f, Y1: %3.2f, X2: %3.2f, Y2: %3.2f\n",
+            img.area.x1,
+            img.area.y1,
+            img.area.x2,
+            img.area.y2
+          );
+          stdout.printf( "\n" );
+        }
       }
     }
     catch ( Poppler.Error e )

@@ -31,6 +31,7 @@ ForOutputDev::ForOutputDev()
 
   image_nr = 0;
   image_list = new Image;
+  current_image = image_list;
 }
 
 ForOutputDev::~ForOutputDev()
@@ -288,8 +289,6 @@ void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
 
 void ForOutputDev::doImage( GfxState *state, Stream *str, int width, int height )
 {
-  static Image *current_image = image_list;
-
   current_image->file_pos = str->getPos( );
   current_image->id = image_nr;
 
