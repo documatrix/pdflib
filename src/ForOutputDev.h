@@ -191,6 +191,7 @@ public:
 
   // the printed paths
   Path *path_list;
+  Path *current_path;
   // the number of paths
   int path_number;
 

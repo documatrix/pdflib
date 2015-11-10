@@ -73,6 +73,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
   Word* word_i;
   GooString* myText;
   double xMinA, yMinA, xMaxA, yMaxA;
+  double red, green, blue;
 
   *n_words = word_length;
 
@@ -95,6 +96,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     word_i->y2 = yMaxA;
     word_i->font_size = word->getFontSize( );
     word_i->baseline = word->getBaseline( );
+
     word_i->char_count = word->getLength( );
     word_i->edge_count = word_i->char_count + 1;
     word_i->edges = (double*)malloc( word_i->edge_count * sizeof( double* ) );
@@ -102,6 +104,15 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     {
       word_i->edges[ i ] = word->getEdge( i );
     }
+
+    word_i->char_pos = word->getCharPos( );
+
+    word->getColor( &red, &green, &blue );
+    word_i->color.red   = dblToByte( red );
+    word_i->color.green = dblToByte( green );
+    word_i->color.blue  = dblToByte( blue );
+
+    word_i->rotation = ( 360 - ( word->getRotation( ) * 90 ) ) % 360;
 
     delete myText;
   }

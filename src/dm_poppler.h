@@ -107,6 +107,9 @@ extern "C" {
     double *edges;
     int edge_count;
     int char_count;
+    int char_pos;
+    RGBAColor color;
+    int rotation;
   }Word;
 
   /* The definition for struct Image */

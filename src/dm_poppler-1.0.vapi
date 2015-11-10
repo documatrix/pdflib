@@ -142,9 +142,12 @@ namespace DMPoppler
     public string text;
     public double font_size;
     public double baseline;
-    public int char_count;
+    public int32 char_count;
     [CCode (array_length_cname = "edge_count")]
     public double[] edges;
+    public int32 char_pos;
+    public RGBAColor color;
+    public int32 rotation;
   }
 
   [CCode (cname = "ForPath")]
@@ -163,22 +166,22 @@ namespace DMPoppler
     public LineJoin line_join;
     public LineDash line_dash;
     public double miter_limit;
-    public int char_pos;
-    public int object_pos;
+    public int32 char_pos;
+    public int32 object_pos;
   }
 
   [CCode (cname = "ForImage")]
   public struct ForImage
   {
-    public int id;
-    public int file_position;
+    public int32 id;
+    public int64 file_position;
     public RGBAColor color;
-    public int height;
-    public int width;
+    public int32 height;
+    public int32 width;
     public ForRectangle area;
 
-    public int char_pos;
-    public int object_pos;
+    public int32 char_pos;
+    public int32 object_pos;
   }
 
   [CCode (cname = "get_words")]

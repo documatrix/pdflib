@@ -28,6 +28,7 @@ ForOutputDev::ForOutputDev()
 
   path_number = 0;
   path_list = new Path;
+  current_path = path_list;
 
   image_nr = 0;
   image_list = new Image;
@@ -206,7 +207,6 @@ void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
   double xMin, yMin, xMax, yMax;
   state->getUserClipBBox(&xMin, &yMin, &xMax, &yMax);
 
-  static Path *current_path = path_list;
   GfxPath *path = state->getPath( );
   GfxSubpath *subpath;
   double *x, *y;

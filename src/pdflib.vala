@@ -80,12 +80,17 @@ namespace PDFLib
     /**
      * An array containing all words of the page.
      */
-    public DMPoppler.Word[]? words = null;
+    public Word[]? words = null;
 
     /**
      * An array containing all images of the page.
      */
-    public PDFImage[]? images = null;
+    public ForImage[]? images = null;
+
+    /**
+     * An array containing all paths of the page.
+     */
+    public ForPath[]? paths = null;
 
     /**
      * Creates a new PDFPage from a Poppler.Page.
@@ -99,97 +104,116 @@ namespace PDFLib
 
       DMPoppler.get_words( this.page, out this.words );
 
-      this.read_images( );
+      DMPoppler.get_elements( this.page, out this.paths, out this.images );
     }
 
     /**
-     * Reads the images from the Poppler.Page.
+     * Sorts all words, images and paths of this page and stores them into a PDFObject array.
+     * @return A sorted PDFObject[] containing all words, images and paths of this page.
      */
-    private void read_images( )
+    public PDFObject[] get_sorted_elements( )
     {
-      List<ImageMapping> img_mapping = this.page.get_image_mapping( );
-      uint32 length = img_mapping.length( );
+      uint32 pdf_objects_length = 0;
 
-      this.images = new PDFImage[ length ];
+      unowned Word word = { };
+      uint32 word_index = 0;
+      bool word_empty = true;
 
-      for ( int32 i = 0; i < length; i ++ )
+      unowned ForImage image = { };
+      uint32 image_index = 0;
+      bool image_empty = true;
+
+      unowned ForPath path = { };
+      uint32 path_index = 0;
+      bool path_empty = true;
+
+      if ( this.words != null && this.words.length > 0 )
       {
-        this.images[ i ] = new PDFImage.from_image_mapping( img_mapping.nth_data( i ) );
+        word = this.words[ 0 ];
+        pdf_objects_length += this.words.length;
+        word_empty = false;
       }
+
+      if ( this.images != null && this.images.length > 0 )
+      {
+        image = this.images[ 0 ];
+        pdf_objects_length += this.images.length;
+        image_empty = false;
+      }
+
+      if ( this.paths != null && this.paths.length > 0 )
+      {
+        path = this.paths[ 0 ];
+        pdf_objects_length += this.paths.length;
+        path_empty = false;
+      }
+
+      PDFObject[] pdf_objects = new PDFObject[ pdf_objects_length ];
+      for ( uint32 i = 0; i < pdf_objects_length; i ++ )
+      {
+        if ( !word_empty &&
+             ( image_empty || word.char_pos <= image.char_pos ) &&
+             ( path_empty || word.char_pos <= path.char_pos )
+           )
+        {
+          pdf_objects[ i ] = new PDFObject.from_word( word );
+          word_index ++;
+          if ( word_index >= this.words.length )
+          {
+            word_empty = true;
+          }
+          else
+          {
+            word = this.words[ word_index ];
+          }
+        }
+        else if ( !image_empty &&
+                  ( path_empty || ( image.char_pos < path.char_pos || ( image.char_pos == path.char_pos && image.object_pos <= path.object_pos ) ) )
+                )
+        {
+          pdf_objects[ i ] = new PDFObject.from_image( image );
+          image_index ++;
+          if ( image_index >= this.images.length )
+          {
+            image_empty = true;
+          }
+          else
+          {
+            image = this.images[ image_index ];
+          }
+        }
+        else if ( !path_empty )
+        {
+          PDFObject po = new PDFObject.from_path( path );
+          pdf_objects[ i ] = po;
+          path_index ++;
+          if ( path_index >= this.paths.length )
+          {
+            path_empty = true;
+          }
+          else
+          {
+            path = this.paths[ path_index ];
+          }
+        }
+        else
+        {
+          /* Darf nicht passieren */
+          break;
+        }
+      }
+
+      return pdf_objects;
     }
 
     /**
      * Loads the image data for the given PDFImage.
+     * @param image The image whose data will be loaded.
+     * @return The loaded image data.
      */
-    public void load_image_data( PDFImage pdf_image )
+    public uint8[] load_image_data( ForImage image )
     {
-      pdf_image.set_data_from_surface( this.page.get_image( pdf_image.id ) );
-    }
-  }
-
-  /**
-   * This class represents a PDF image.
-   */
-  public class PDFImage : GLib.Object
-  {
-    /**
-     * The X coordinate of the upper left corner.
-     */
-    public double x1;
-
-    /**
-     * The Y coordinate of the upper left corner.
-     */
-    public double y1;
-
-    /**
-     * The X coordinate of the lower right corner.
-     */
-    public double x2;
-
-    /**
-     * The Y coordinate of the lower right corner.
-     */
-    public double y2;
-
-    /**
-     * The image id on the page.
-     */
-    public int32 id;
-
-    /**
-     * The unique image id.
-     */
-    public string key;
-
-    /**
-     * The image data.
-     */
-    public uint8[] data;
-
-    /**
-     * Creates a new PDFImages from the given Poppler.ImageMapping.
-     * @param img_map The Poppler.ImageMapping.
-     */
-    public PDFImage.from_image_mapping( ImageMapping img_map )
-    {
-      Rectangle area = img_map.area;
-      this.x1 = area.x1;
-      this.y1 = area.y1;
-      this.x2 = area.x2;
-      this.y2 = area.y2;
-      this.id = img_map.image_id;
-
-      //TODO unique img id
-      this.key = "img%d".printf( this.id );
-    }
-
-    /**
-     * Loads the data from the given Cairo.Surface and stores in into PDFImage.data.
-     * @param surface The Cairo.Surface from which the image data will be loaded.
-     */
-    public void set_data_from_surface( Cairo.Surface surface )
-    {
+      Cairo.Surface surface = this.page.get_image( image.id );
       void* data = null;
       uint len = 0;
 
@@ -201,10 +225,78 @@ namespace PDFLib
         return Cairo.Status.SUCCESS;
       } );
 
-      this.data = new uint8[ len ];
-      GLib.Memory.copy( &this.data[ 0 ], data, len );
+      uint8[] img_data = new uint8[ len ];
+      GLib.Memory.copy( &img_data[ 0 ], data, len );
 
       GLib.free( data );
+      return img_data;
+    }
+  }
+
+  /**
+   * This enum contains the possible PDFObject types.
+   */
+  public enum PDFObjectType
+  {
+    WORD,
+    IMAGE,
+    PATH;
+  }
+
+  /**
+   * This class represents a Object in the PDF file.
+   * It is used to store and sort different types of PDF objects in the same array.
+   */
+  public class PDFObject : GLib.Object
+  {
+    /**
+     * The type of this PDFObject.
+     */
+    public PDFObjectType type;
+
+    /**
+     * If PDFObject.type is PDFObjectType.WORD, this Word will contain the actual word object.
+     */
+    public unowned Word word;
+
+    /**
+     * If PDFObject.type is PDFObjectType.IMAGE, this ForImage will contain the actual image object.
+     */
+    public unowned ForImage image;
+
+    /**
+     * If PDFObject.type is PDFObjectType.PATH, this ForPath will contain the actual path object.
+     */
+    public unowned ForPath path;
+
+    /**
+     * Creates a new PDFObject with the type PDFObjectType.WORD and the given word as content.
+     * @param word The word object.
+     */
+    public PDFObject.from_word( Word word )
+    {
+      this.word = word;
+      this.type = PDFObjectType.WORD;
+    }
+
+    /**
+     * Creates a new PDFObject with the type PDFObjectType.IMAGE and the given image as content.
+     * @param image The image object.
+     */
+    public PDFObject.from_image( ForImage image )
+    {
+      this.image = image;
+      this.type = PDFObjectType.IMAGE;
+    }
+
+    /**
+     * Creates a new PDFObject with the type PDFObjectType.PATH and the given path as content.
+     * @param path The path object.
+     */
+    public PDFObject.from_path( ForPath path )
+    {
+      this.path = path;
+      this.type = PDFObjectType.PATH;
     }
   }
 }
