@@ -88,7 +88,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     char* myString = strdup( myText->getCString( ) );
 
     word_i = *words + i;
-    printf( "Text, %s, Pos %d \n", myString, word->getCharPos( ) );
+    //printf( "Text, %s, Pos %d \n", myString, word->getCharPos( ) );
     word_i->text = myString;
     word_i->x1 = xMinA;
     word_i->y1 = yMinA;

@@ -174,6 +174,10 @@ public:
   virtual void fill( GfxState *state );
   virtual void eoFill( GfxState *state );
 
+  //----- path clipping
+  virtual void clip( GfxState *state );
+  virtual void eoClip(GfxState *state);
+
   //----- save path
   virtual void doPath( GfxState *state, int fill );
 

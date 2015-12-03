@@ -55,6 +55,7 @@ void ForOutputDev::endPage( )
 
 void ForOutputDev::restoreState(GfxState *state)
 {
+  clip( state );
 }
 
 void ForOutputDev::updateFont(GfxState *state)
@@ -179,6 +180,16 @@ GBool ForOutputDev::patchMeshShadedFill(GfxState *state, GfxPatchMeshShading *sh
 GBool ForOutputDev::gouraudTriangleShadedFill(GfxState *state, GfxGouraudTriangleShading *shading)
 {
   printf( "gouraudTriangleShadedFill\n" );
+}
+
+void ForOutputDev::clip( GfxState *state )
+{
+  state->getUserClipBBox( &clip_x1, &clip_y1, &clip_x2, &clip_y2 );
+}
+
+void ForOutputDev::eoClip( GfxState *state )
+{
+  state->getUserClipBBox( &clip_x1, &clip_y1, &clip_x2, &clip_y2 );
 }
 
 void ForOutputDev::fill( GfxState *state )
