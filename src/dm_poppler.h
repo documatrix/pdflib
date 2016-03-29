@@ -110,6 +110,7 @@ extern "C" {
     int char_pos;
     RGBAColor color;
     int rotation;
+    char *font_name;
   }Word;
 
   /* The definition for struct Image */

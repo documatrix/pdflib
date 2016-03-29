@@ -71,7 +71,6 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
   TextWord *word;
   *words = g_new( Word, word_length );
   Word* word_i;
-  GooString* myText;
   double xMinA, yMinA, xMaxA, yMaxA;
   double red, green, blue;
 
@@ -83,13 +82,11 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     word = wordlist->get( i );
     word->getBBox( &xMinA, &yMinA, &xMaxA, &yMaxA );
 
-    myText = word->getText( );
-
-    char* myString = strdup( myText->getCString( ) );
-
     word_i = *words + i;
     //printf( "Text, %s, Pos %d \n", myString, word->getCharPos( ) );
-    word_i->text = myString;
+    word_i->text = strdup( word->getText( )->getCString( ) );
+    // TODO word->getFontName( ) for poppler versions pre 0.20.5
+    word_i->font_name = strdup( word->getFontName( 0 )->getCString( ) );
     word_i->x1 = xMinA;
     word_i->y1 = yMinA;
     word_i->x2 = xMaxA;
@@ -113,8 +110,6 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     word_i->color.blue  = dblToByte( blue );
 
     word_i->rotation = ( 360 - ( word->getRotation( ) * 90 ) ) % 360;
-
-    delete myText;
   }
   delete wordlist;
   delete gfx;

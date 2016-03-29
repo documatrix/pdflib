@@ -140,6 +140,7 @@ namespace DMPoppler
     public double x2;
     public double y2;
     public string text;
+    public string font_name;
     public double font_size;
     public double baseline;
     public int32 char_count;
