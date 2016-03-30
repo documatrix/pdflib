@@ -13,6 +13,12 @@
 
 //------------------------------------------------------------------------
 
+#ifdef LOG_DEBUG
+#define LOG(x) (x)
+#else
+#define LOG(x)
+#endif
+
 //------------------------------------------------------------------------
 // ForOutputDev
 //------------------------------------------------------------------------
@@ -41,7 +47,7 @@ ForOutputDev::~ForOutputDev()
 
 void ForOutputDev::startPage( int pageNum, GfxState *state )
 {
-  printf( "startPage\n" );
+  LOG( printf( "startPage\n" ) );
   char_pos = 0;
   object_pos = 0;
 
@@ -84,14 +90,13 @@ void ForOutputDev::drawChar( GfxState *state, double x, double y,
                              double originX, double originY,
                              CharCode c, int nBytes, Unicode *u, int uLen )
 {
-  //printf( "Char\n");
   char_pos += nBytes;
   object_pos = 0;
 }
 
 void ForOutputDev::incCharCount( int nChars )
 {
-  printf( "Achtung incCharCount wurde aufgerufen wurde nicht getestet!\n" );
+  LOG( printf( "incCharCount\n" ) );
   char_pos += nChars;
   object_pos = 0;
 }
@@ -109,19 +114,19 @@ void ForOutputDev::setSoftMaskFromImageMask(GfxState *state, Object *ref, Stream
                                             int width, int height, GBool invert,
                                             GBool inlineImg, double *baseMatrix)
 {
-  printf( "setSoftMaskFromImageMask\n" );
+  LOG( printf( "setSoftMaskFromImageMask\n" ) );
 }
 
 void ForOutputDev::unsetSoftMaskFromImageMask(GfxState *state, double *baseMatrix)
 {
-  printf( "unsetSoftMaskFromImageMask\n" );
+  LOG( printf( "unsetSoftMaskFromImageMask\n" ) );
 }
 
 void ForOutputDev::drawImageMaskRegular(GfxState *state, Object *ref, Stream *str,
                                         int width, int height, GBool invert,
                                         GBool interpolate, GBool inlineImg)
 {
-  printf( "drawImageMaskRegular\n" );
+  LOG( printf( "drawImageMaskRegular\n" ) );
 }
 
 
@@ -129,7 +134,7 @@ void ForOutputDev::drawImageMaskPrescaled(GfxState *state, Object *ref, Stream *
                                           int width, int height, GBool invert,
                                           GBool interpolate, GBool inlineImg)
 {
-  printf( "drawImageMaskPrescaled\n" );
+  LOG( printf( "drawImageMaskPrescaled\n" ) );
 }
 
 void ForOutputDev::drawImage(GfxState *state, Object *ref, Stream *str,
@@ -149,7 +154,7 @@ void ForOutputDev::drawSoftMaskedImage(GfxState *state, Object *ref, Stream *str
                                        GfxImageColorMap *maskColorMap,
                                        GBool maskInterpolate)
 {
-  printf( "drawSoftMaskedImage\n" );
+  LOG( printf( "drawSoftMaskedImage\n" ) );
 }
 
 void ForOutputDev::drawMaskedImage(GfxState *state, Object *ref, Stream *str,
@@ -160,7 +165,7 @@ void ForOutputDev::drawMaskedImage(GfxState *state, Object *ref, Stream *str,
                                    int maskWidth, int maskHeight,
                                    GBool maskInvert, GBool maskInterpolate)
 {
-  printf( "drawMaskedImage\n" );
+  LOG( printf( "drawMaskedImage\n" ) );
 }
 
 GBool ForOutputDev::tilingPatternFill(GfxState *state, Gfx *gfxA, Catalog *cat, Object *str,
@@ -169,17 +174,17 @@ GBool ForOutputDev::tilingPatternFill(GfxState *state, Gfx *gfxA, Catalog *cat, 
           int x0, int y0, int x1, int y1,
           double xStep, double yStep)
 {
-  printf( "tilingPatternFill\n" );
+  LOG( printf( "tilingPatternFill\n" ) );
 }
 
 GBool ForOutputDev::patchMeshShadedFill(GfxState *state, GfxPatchMeshShading *shading)
 {
-  printf( "patchMeshShadedFill\n" );
+  LOG( printf( "patchMeshShadedFill\n" ) );
 }
 
 GBool ForOutputDev::gouraudTriangleShadedFill(GfxState *state, GfxGouraudTriangleShading *shading)
 {
-  printf( "gouraudTriangleShadedFill\n" );
+  LOG( printf( "gouraudTriangleShadedFill\n" ) );
 }
 
 void ForOutputDev::clip( GfxState *state )
@@ -287,7 +292,6 @@ void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
       /* Set Points (upsite down!)*/
       current_path->x[ point_nr ] = subpath->getX( sub_nr ) - xMin + clip_x1;
       current_path->y[ point_nr ] = state->getPageHeight( ) - ( subpath->getY( sub_nr ) - yMin + clip_y1 );
-      // printf( "oldy %f newy %f pageheight %f yMin %f clip_y1 %f\n", subpath->getY( sub_nr ), current_path->y[ point_nr ], yMin, clip_y1 );
     }
   }
   current_path->object_pos = object_pos;

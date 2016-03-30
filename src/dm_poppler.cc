@@ -83,10 +83,12 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     word->getBBox( &xMinA, &yMinA, &xMaxA, &yMaxA );
 
     word_i = *words + i;
-    //printf( "Text, %s, Pos %d \n", myString, word->getCharPos( ) );
     word_i->text = strdup( word->getText( )->getCString( ) );
-    // TODO word->getFontName( ) for poppler versions pre 0.20.5
+#if POPPLER_CHECK_VERSION( 0,21,0 )
     word_i->font_name = strdup( word->getFontName( 0 )->getCString( ) );
+#else
+    word_i->font_name = strdup( word->getFontName( )->getCString( ) );
+#endif
     word_i->x1 = xMinA;
     word_i->y1 = yMinA;
     word_i->x2 = xMaxA;
