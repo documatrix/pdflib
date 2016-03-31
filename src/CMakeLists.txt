@@ -2,6 +2,7 @@ set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set (PKGDATADIR "${DATADIR}/pdflib")
 set (GETTEXT_PACKAGE "pdflib")
 set (CMAKE_C_FLAGS "-g -O3")
+set (CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS})
 set (PREFIX ${CMAKE_INSTALL_PREFIX})
 set (DOLLAR "$")
 
@@ -36,6 +37,11 @@ set (PDFLIB_SOURCES pdflib.vala)
 
 set (DM_POPPLER_SOURCES ${DM_POPPLER_SOURCES} ForOutputDev.cc)
 set (DM_POPPLER_SOURCES ${DM_POPPLER_SOURCES} dm_poppler.cc)
+
+if(${LOG_DEBUG} STREQUAL true)
+  set (CMAKE_VALA_OPTS ${CMAKE_VALA_OPTS} -D LOG_DEBUG)
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D LOG_DEBUG")
+endif()
 
 add_library(
   ${DM_POPPLER_NAME} SHARED
