@@ -7,6 +7,10 @@ ifeq "${MAKECMDGOALS}" "windows"
   CMAKE_PREFIX=-DCMAKE_INSTALL_PREFIX=/usr/i686-w64-mingw32/sys-root/mingw
 endif
 
+ifeq "${MAKECMDGOALS}" "windows64"
+  CMAKE_PREFIX=-DCMAKE_INSTALL_PREFIX=/usr/x86_64-w64-mingw32/sys-root/mingw
+endif
+
 ifneq "${PREFIX}" ""
   CMAKE_PREFIX=-DCMAKE_INSTALL_PREFIX=${PREFIX}
 endif
@@ -41,6 +45,9 @@ linux: build copy_files
 
 windows: build copy_files
 	cd build && cmake . -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-mingw32.cmake ${CMAKE_OPTS} && make
+
+windows64: build copy_files
+	cd build && cmake . -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-mingw64.cmake ${CMAKE_OPTS} && make
 
 install: build
 	cd build && make install && ldconfig

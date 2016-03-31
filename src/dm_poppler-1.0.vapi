@@ -123,7 +123,7 @@ namespace DMPoppler
     public double alpha;
   }
 
-  [CCode (cname="Rectangle")]
+  [CCode (cname="ForRectangle")]
   public struct ForRectangle
   {
     public double x1;

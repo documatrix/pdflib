@@ -38,7 +38,7 @@ extern "C" {
     double x2;
     double y1;
     double y2;
-  }Rectangle;
+  }ForRectangle;
 
   /* The definition for enum PathCommand */
   enum PathCommand{
@@ -121,7 +121,7 @@ extern "C" {
     RGBAColor color;
     int width;
     int height;
-    Rectangle area;
+    ForRectangle area;
 
     int char_pos;
     int object_pos;
