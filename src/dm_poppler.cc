@@ -98,7 +98,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
 
     word_i->char_count = word->getLength( );
     word_i->edge_count = word_i->char_count + 1;
-    word_i->edges = (double*)malloc( word_i->edge_count * sizeof( double* ) );
+    word_i->edges = (double*)malloc( word_i->edge_count * sizeof( double ) );
     for ( int i = 0; i < word_i->edge_count; i ++ )
     {
       word_i->edges[ i ] = word->getEdge( i );

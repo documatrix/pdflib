@@ -248,7 +248,7 @@ void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
   double dashStart;
   state->getLineDash(&dashPattern, &dashLength, &dashStart);
   current_path->dash_length  = dashLength;
-  current_path->dash_pattern = (double*)malloc( dashLength * sizeof( double* ) );
+  current_path->dash_pattern = (double*)malloc( dashLength * sizeof( double ) );
   for ( int i = 0; i < dashLength; ++i )
   {
     current_path->dash_pattern[ i ] = dashPattern[ i ];
@@ -262,9 +262,9 @@ void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
   current_path->opacity     = current_opacity;
 
   /* Points */
-  current_path->x = (double*)malloc( points_count * sizeof( double* ) );
-  current_path->y = (double*)malloc( points_count * sizeof( double* ) );
-  current_path->command = (int*)malloc( points_count * sizeof( int* ) );
+  current_path->x = (double*)malloc( points_count * sizeof( double ) );
+  current_path->y = (double*)malloc( points_count * sizeof( double ) );
+  current_path->command = (int*)malloc( points_count * sizeof( int ) );
   int point_nr = 0;
   for ( int i = 0; i < path->getNumSubpaths( ); ++i )
   {
