@@ -2,21 +2,25 @@ set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set (PKGDATADIR "${DATADIR}/pdflib")
 set (GETTEXT_PACKAGE "pdflib")
 set (CMAKE_C_FLAGS "-g -O3")
-set (CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS})
 set (PREFIX ${CMAKE_INSTALL_PREFIX})
 set (DOLLAR "$")
 
 configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/src/Config.vala)
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
-find_package (Vala REQUIRED)
-include( UseVala )
-
+add_definitions (${DEPS_CFLAGS})
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
   include_directories( ${CMAKE_INSTALL_PREFIX}/include/poppler )
 else()
   include_directories( /usr/include/poppler )
 endif()
+
+include_directories( . )
+
+link_libraries ( ${DEPS_LIBRARIES} )
+link_directories ( ${DEPS_LIBRARY_DIRS} )
+find_package (Vala REQUIRED)
+include( UseVala )
 
 set (VALA_PACKAGES ${VALA_PACKAGES} poppler-glib)
 set (VALA_PACKAGES ${VALA_PACKAGES} gio-2.0)
@@ -32,11 +36,6 @@ set (PDFLIB_SOURCES pdflib.vala)
 
 set (DM_POPPLER_SOURCES ${DM_POPPLER_SOURCES} ForOutputDev.cc)
 set (DM_POPPLER_SOURCES ${DM_POPPLER_SOURCES} dm_poppler.cc)
-
-if(${LOG_DEBUG} STREQUAL true)
-  set (CMAKE_VALA_OPTS ${CMAKE_VALA_OPTS} -D LOG_DEBUG)
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D LOG_DEBUG")
-endif()
 
 add_library(
   ${DM_POPPLER_NAME} SHARED
