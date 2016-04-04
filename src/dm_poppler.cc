@@ -107,9 +107,10 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     word_i->char_pos = word->getCharPos( );
 
     word->getColor( &red, &green, &blue );
-    word_i->color.red   = dblToByte( red );
-    word_i->color.green = dblToByte( green );
-    word_i->color.blue  = dblToByte( blue );
+    word_i->color.r = dblToByte( red );
+    word_i->color.g = dblToByte( green );
+    word_i->color.b = dblToByte( blue );
+    word_i->color.color_space = forDeviceRGB;
 
     word_i->rotation = ( 360 - ( word->getRotation( ) * 90 ) ) % 360;
   }
@@ -187,10 +188,23 @@ gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForIm
     path_i->cmd = (PathCmd*)current_path->command;
 
     /* Path Settings */
-    path_i->color.red   = current_path->color_red;
-    path_i->color.green = current_path->color_green;
-    path_i->color.blue  = current_path->color_blue;
-    path_i->color.alpha = current_path->opacity;
+    if ( current_path->color.color_space != deviceCMYK )
+    {
+      path_i->color.r = current_path->color.r;
+      path_i->color.g = current_path->color.g;
+      path_i->color.b = current_path->color.b;
+      path_i->color.alpha = current_path->color.opacity;
+      path_i->color.color_space = forDeviceRGB;
+    }
+    else
+    {
+      path_i->color.c = current_path->color.c;
+      path_i->color.m = current_path->color.m;
+      path_i->color.y = current_path->color.y;
+      path_i->color.k = current_path->color.k;
+      path_i->color.alpha = current_path->color.opacity;
+      path_i->color.color_space = forDeviceCMYK;
+    }
 
     path_i->path_painting_operator = (PathPaintOp)current_path->path_painting_operator;
     path_i->line_weight = current_path->line_width;
@@ -221,10 +235,23 @@ gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForIm
     image_i = *images + i;
 
     /* Image Settings */
-    image_i->color.red     = current_image->color_red;
-    image_i->color.green   = current_image->color_green;
-    image_i->color.blue    = current_image->color_blue;
-    image_i->color.alpha   = current_image->opacity;
+    if ( current_image->color.color_space != deviceCMYK )
+    {
+      image_i->color.r = current_image->color.r;
+      image_i->color.g = current_image->color.g;
+      image_i->color.b = current_image->color.b;
+      image_i->color.alpha = current_image->color.opacity;
+      image_i->color.color_space = forDeviceRGB;
+    }
+    else
+    {
+      image_i->color.c = current_image->color.c;
+      image_i->color.m = current_image->color.m;
+      image_i->color.y = current_image->color.y;
+      image_i->color.k = current_image->color.k;
+      image_i->color.alpha = current_image->color.opacity;
+      image_i->color.color_space = forDeviceCMYK;
+    }
     image_i->height        = current_image->height;
     image_i->width         = current_image->width;
     image_i->id            = current_image->id;

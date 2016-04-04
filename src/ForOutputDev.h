@@ -20,6 +20,30 @@ struct GfxRGB;
 // ForOutputDev
 //------------------------------------------------------------------------
 
+/* The different color spaces */
+enum ColorSpace
+{
+  deviceRGB,
+  deviceCMYK
+};
+
+/* The definition for struct Color */
+struct Color
+{
+  uint8_t r;
+  uint8_t b;
+  uint8_t g;
+
+  uint8_t c;
+  uint8_t m;
+  uint8_t y;
+  uint8_t k;
+
+  double opacity;
+
+  ColorSpace color_space;
+};
+
 /* The definition for struct Line */
 struct Path
 {
@@ -27,10 +51,7 @@ struct Path
   double *x, *y;
   int *command;
   int path_painting_operator;
-  uint8_t color_red;
-  uint8_t color_blue;
-  uint8_t color_green;
-  double opacity;
+  Color color;
   double line_width;
   int line_cap;
   int line_join;
@@ -49,10 +70,7 @@ struct Image
 {
   unsigned int id;
   int64_t file_pos;
-  uint8_t color_red;
-  uint8_t color_blue;
-  uint8_t color_green;
-  double opacity;
+  Color color;
   int width;
   int height;
 
@@ -184,11 +202,17 @@ public:
   //----- save image
   virtual void doImage( GfxState *state, Stream *str, int width, int height );
 
+  //----- get colors
+  void getStrokeColor( GfxState *state );
+  void getFillColor( GfxState *state );
+
   // the current document
   PDFDoc *doc;
 
   // the current color
-  GfxRGB current_color;
+  GfxRGB current_color_rgb;
+  GfxCMYK current_color_cmyk;
+  GfxColorSpaceMode current_color_space;
   // the current opacity
   double current_opacity;
 

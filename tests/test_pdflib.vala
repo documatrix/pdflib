@@ -100,9 +100,9 @@ namespace PDFLibTests
           }
           stdout.printf( "\n" );
           stdout.printf( "  R%03u,G:%03u,B:%03u,A:%lf\n  LineWeight:%lf Fill:%s LineCap:%s LineJoin:%s MiterLimit:%f\n",
-            path.color.red,
-            path.color.green,
-            path.color.blue,
+            path.color.r,
+            path.color.g,
+            path.color.b,
             path.color.alpha,
             path.line_weight,
             path.path_painting_operator.to_string( ),
@@ -128,9 +128,9 @@ namespace PDFLibTests
             img.height
           );
           stdout.printf( "  R:%03u,G:%03u,B:%03u,A:%lf\n",
-            img.color.red,
-            img.color.green,
-            img.color.blue,
+            img.color.r,
+            img.color.g,
+            img.color.b,
             img.color.alpha
           );
           stdout.printf( "  X1: %3.2f, Y1: %3.2f, X2: %3.2f, Y2: %3.2f\n",
