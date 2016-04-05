@@ -22,14 +22,30 @@ extern "C" {
 #include <poppler-page.h>
 #include <stdint.h>
 
+  /* The different color spaces */
+  enum _ForColorSpace
+  {
+    forDeviceRGB,
+    forDeviceCMYK
+  };
+  typedef enum _ForColorSpace ForColorSpace;
+
   /* The definition for the RGBColor*/
   typedef struct
   {
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+
+    uint8_t c;
+    uint8_t m;
+    uint8_t y;
+    uint8_t k;
+
     double alpha;
-  }RGBAColor;
+
+    ForColorSpace color_space;
+  }ForColor;
 
   /* The definition for the For Rectangle*/
   typedef struct
@@ -88,7 +104,7 @@ extern "C" {
     double *y;
     PathCmd *cmd;
     PathPaintOp path_painting_operator;
-    RGBAColor color;
+    ForColor color;
     double opacity;
     double line_weight;
     DMLineCap line_cap;
@@ -108,7 +124,7 @@ extern "C" {
     int edge_count;
     int char_count;
     int char_pos;
-    RGBAColor color;
+    ForColor color;
     int rotation;
     char *font_name;
   }Word;
@@ -118,7 +134,7 @@ extern "C" {
   {
     unsigned int id;
     int64_t file_position;
-    RGBAColor color;
+    ForColor color;
     int width;
     int height;
     ForRectangle area;

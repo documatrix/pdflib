@@ -29,7 +29,9 @@ ForOutputDev::ForOutputDev()
   char_pos = 0;
   object_pos = 0;
 
-  current_color.r = current_color.g = current_color.b = 0;
+  current_color_rgb.r = current_color_rgb.g = current_color_rgb.b = 0;
+  current_color_cmyk.c = current_color_cmyk.m = current_color_cmyk.y = current_color_cmyk.k = 0;
+  current_color_space = csDeviceRGB;
   clip_x1 = clip_x2 = clip_y1 = clip_y2 = 0;
 
   path_number = 0;
@@ -51,7 +53,9 @@ void ForOutputDev::startPage( int pageNum, GfxState *state )
   char_pos = 0;
   object_pos = 0;
 
-  current_color.r = current_color.g = current_color.b = 0;
+  current_color_rgb.r = current_color_rgb.g = current_color_rgb.b = 0;
+  current_color_cmyk.c = current_color_cmyk.m = current_color_cmyk.y = current_color_cmyk.k = 0;
+  current_color_space = csDeviceRGB;
   clip_x1 = clip_x2 = clip_y1 = clip_y2 = 0;
 }
 
@@ -105,8 +109,7 @@ void ForOutputDev::drawImageMask(GfxState *state, Object *ref, Stream *str,
                                  int width, int height, GBool invert,
                                  GBool interpolate, GBool inlineImg)
 {
-  state->getFillRGB( &current_color );
-  current_opacity = state->getFillOpacity( );
+  getFillColor( state );
   doImage( state, str, width, height );
 }
 
@@ -199,22 +202,19 @@ void ForOutputDev::eoClip( GfxState *state )
 
 void ForOutputDev::fill( GfxState *state )
 {
-  current_opacity = state->getFillOpacity();
-  state->getFillRGB( &current_color );
+  getFillColor( state );
   doPath( state, FILL );
 }
 
 void ForOutputDev::eoFill( GfxState *state )
 {
-  current_opacity = state->getFillOpacity( );
-  state->getFillRGB( &current_color );
+  getFillColor( state );
   doPath( state, EOFILL );
 }
 
 void ForOutputDev::stroke( GfxState *state )
 {
-  current_opacity = state->getStrokeOpacity();
-  state->getStrokeRGB( &current_color );
+  getStrokeColor( state );
   doPath( state, STROKE );
 }
 
@@ -256,10 +256,22 @@ void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
   current_path->dash_start   = dashStart;
 
   /* Color */
-  current_path->color_red   = colToByte( current_color.r );
-  current_path->color_green = colToByte( current_color.g );
-  current_path->color_blue  = colToByte( current_color.b );
-  current_path->opacity     = current_opacity;
+  if ( current_color_space != csDeviceCMYK )
+  {
+    current_path->color.r = colToByte( current_color_rgb.r );
+    current_path->color.g = colToByte( current_color_rgb.g );
+    current_path->color.b = colToByte( current_color_rgb.b );
+    current_path->color.color_space = deviceRGB;
+  }
+  else
+  {
+    current_path->color.c = colToByte( current_color_cmyk.c );
+    current_path->color.m = colToByte( current_color_cmyk.m );
+    current_path->color.y = colToByte( current_color_cmyk.y );
+    current_path->color.k = colToByte( current_color_cmyk.k );
+    current_path->color.color_space = deviceCMYK;
+  }
+  current_path->color.opacity = current_opacity;
 
   /* Points */
   current_path->x = (double*)malloc( points_count * sizeof( double ) );
@@ -313,10 +325,22 @@ void ForOutputDev::doImage( GfxState *state, Stream *str, int width, int height 
   current_image->width  = width;
 
   /* Color */
-  current_image->color_red   = colToByte( current_color.r );
-  current_image->color_green = colToByte( current_color.g );
-  current_image->color_blue  = colToByte( current_color.b );
-  current_image->opacity     = current_opacity;
+  if ( current_color_space != csDeviceCMYK )
+  {
+    current_image->color.r = colToByte( current_color_rgb.r );
+    current_image->color.g = colToByte( current_color_rgb.g );
+    current_image->color.b = colToByte( current_color_rgb.b );
+    current_image->color.color_space = deviceRGB;
+  }
+  else
+  {
+    current_image->color.c = colToByte( current_color_cmyk.c );
+    current_image->color.m = colToByte( current_color_cmyk.m );
+    current_image->color.y = colToByte( current_color_cmyk.y );
+    current_image->color.k = colToByte( current_color_cmyk.k );
+    current_image->color.color_space = deviceCMYK;
+  }
+  current_image->color.opacity = current_opacity;
 
   current_image->object_pos = object_pos;
   current_image->char_pos = char_pos;
@@ -326,4 +350,44 @@ void ForOutputDev::doImage( GfxState *state, Stream *str, int width, int height 
   object_pos ++;
   current_image->next = new Image;
   current_image = current_image->next;
+}
+
+void ForOutputDev::getStrokeColor( GfxState *state )
+{
+  current_opacity = state->getStrokeOpacity( );
+  current_color_space = state->getStrokeColorSpace( )->getMode( );
+
+  if ( current_color_space == csSeparation )
+  {
+    current_color_space = ( (GfxSeparationColorSpace*)state->getStrokeColorSpace( ) )->getAlt( )->getMode( );
+  }
+
+  if ( current_color_space == csDeviceCMYK )
+  {
+    state->getStrokeCMYK( &current_color_cmyk );
+  }
+  else
+  {
+    state->getStrokeRGB( &current_color_rgb );
+  }
+}
+
+void ForOutputDev::getFillColor( GfxState *state )
+{
+  current_opacity = state->getFillOpacity( );
+  current_color_space = state->getFillColorSpace( )->getMode( );
+
+  if ( current_color_space == csSeparation )
+  {
+    current_color_space = ( (GfxSeparationColorSpace*)state->getFillColorSpace( ) )->getAlt( )->getMode( );
+  }
+
+  if ( current_color_space == csDeviceCMYK )
+  {
+    state->getFillCMYK( &current_color_cmyk );
+  }
+  else
+  {
+    state->getFillRGB( &current_color_rgb );
+  }
 }

@@ -114,13 +114,43 @@ namespace DMPoppler
     public double start;
   }
 
-  [CCode (cname="RGBAColor")]
-  public struct RGBAColor
+  [CCode (cname="ForColorSpace")]
+  public enum ForColorSpace
   {
-    public uint8 red;
-    public uint8 green;
-    public uint8 blue;
+    [CCode (cname="forDeviceRGB")]
+    RGB,
+    [CCode (cname="forDeviceCMYK")]
+    CMYK;
+
+    public string to_string( )
+    {
+      switch ( this )
+      {
+        case RGB:
+          return "RGB";
+        case CMYK:
+          return "CMYK";
+         default:
+          return "Undefined";
+      }
+    }
+  }
+
+  [CCode (cname="ForColor")]
+  public struct ForColor
+  {
+    public uint8 r;
+    public uint8 g;
+    public uint8 b;
+
+    public uint8 c;
+    public uint8 m;
+    public uint8 y;
+    public uint8 k;
+
     public double alpha;
+
+    public ForColorSpace color_space;
   }
 
   [CCode (cname="ForRectangle")]
@@ -147,7 +177,7 @@ namespace DMPoppler
     [CCode (array_length_cname = "edge_count")]
     public double[] edges;
     public int32 char_pos;
-    public RGBAColor color;
+    public ForColor color;
     public int32 rotation;
   }
 
@@ -161,7 +191,7 @@ namespace DMPoppler
     [CCode (array_length_cname = "count", array_length_type = "guint")]
     public PathCmd[] cmd;
     public PathPaintingOperator path_painting_operator;
-    public RGBAColor color;
+    public ForColor color;
     public double line_weight;
     public LineCap line_cap;
     public LineJoin line_join;
@@ -176,7 +206,7 @@ namespace DMPoppler
   {
     public int32 id;
     public int64 file_position;
-    public RGBAColor color;
+    public ForColor color;
     public int32 height;
     public int32 width;
     public ForRectangle area;
