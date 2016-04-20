@@ -126,7 +126,7 @@ extern "C" {
     int char_pos;
     ForColor color;
     int rotation;
-    char *font_name;
+    const char *font_name;
   }Word;
 
   /* The definition for struct Image */
