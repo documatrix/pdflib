@@ -119,6 +119,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     word_i->color.g = dblToByte( green );
     word_i->color.b = dblToByte( blue );
     word_i->color.color_space = forDeviceRGB;
+    word_i->color.alpha = 1.0;
 
     word_i->rotation = ( 360 - ( word->getRotation( ) * 90 ) ) % 360;
   }

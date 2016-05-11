@@ -151,6 +151,23 @@ namespace DMPoppler
     public double alpha;
 
     public ForColorSpace color_space;
+
+    /**
+     * This method will return CSS code for use in HTML files which represents the color.
+     * @return The CSS code which represents the color.
+     */
+    public string get_html_color( )
+    {
+      if ( this.color_space == ForColorSpace.RGB )
+      {
+        return "rgb(%u,%u,%u)".printf( this.r, this.g, this.b );
+      }
+      if ( this.color_space == ForColorSpace.CMYK )
+      {
+        return "cmyk(%u,%u,%u,%u)".printf( this.c, this.m, this.y, this.k );
+      }
+      return "Undefined";
+    }
   }
 
   [CCode (cname="ForRectangle")]
