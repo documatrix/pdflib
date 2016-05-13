@@ -160,11 +160,11 @@ namespace DMPoppler
     {
       if ( this.color_space == ForColorSpace.RGB )
       {
-        return "rgb(%s,%s,%s)".printf( ( (float)this.r ).to_string( ), ( (float)this.g ).to_string( ), ( (float)this.b ).to_string( ) );
+        return "rgb(%u,%u,%u)".printf( this.r, this.g, this.b );
       }
       if ( this.color_space == ForColorSpace.CMYK )
       {
-        return "cmyk(%s,%s,%s,%s)".printf( ( (float)this.c ).to_string( ), ( (float)this.m ).to_string( ), ( (float)this.y ).to_string( ), ( (float)this.k ).to_string( ) );
+        return "cmyk(%u,%u,%u,%u)".printf( this.c, this.m, this.y, this.k );
       }
       return "Undefined";
     }
