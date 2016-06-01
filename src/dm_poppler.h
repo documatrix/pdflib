@@ -158,6 +158,10 @@ extern "C" {
   /* The destroy funtion of the struct word -> no memoryleak */
   void dm_poppler_for_image_destroy( ForImage *image );
 
+  static inline uint8_t dblToByteRnd( double x ) {
+    return ( x * 255.0 + 0.5 );
+  }
+
 #ifdef __cplusplus
 }
 #endif

@@ -152,8 +152,8 @@ namespace PDFLib
       for ( uint32 i = 0; i < pdf_objects_length; i ++ )
       {
         if ( !word_empty &&
-             ( image_empty || word.char_pos <= image.char_pos ) &&
-             ( path_empty || word.char_pos <= path.char_pos )
+             ( image_empty || word.char_pos < image.char_pos ) &&
+             ( path_empty || word.char_pos < path.char_pos )
            )
         {
           pdf_objects[ i ] = new PDFObject.from_word( word );

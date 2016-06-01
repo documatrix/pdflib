@@ -115,9 +115,9 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     word_i->char_pos = word->getCharPos( );
 
     word->getColor( &red, &green, &blue );
-    word_i->color.r = dblToByte( red );
-    word_i->color.g = dblToByte( green );
-    word_i->color.b = dblToByte( blue );
+    word_i->color.r = dblToByteRnd( red );
+    word_i->color.g = dblToByteRnd( green );
+    word_i->color.b = dblToByteRnd( blue );
     word_i->color.color_space = forDeviceRGB;
     word_i->color.alpha = 1.0;
 
