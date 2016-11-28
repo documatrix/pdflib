@@ -157,6 +157,7 @@ void ForOutputDev::drawSoftMaskedImage(GfxState *state, Object *ref, Stream *str
                                        GfxImageColorMap *maskColorMap,
                                        GBool maskInterpolate)
 {
+  doImage( state, str, width, height );
   LOG( printf( "drawSoftMaskedImage\n" ) );
 }
 
