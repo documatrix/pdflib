@@ -113,6 +113,7 @@ extern "C" {
     double miter_limit;
     int char_pos;
     int object_pos;
+    double ctm[ 6 ];
   }ForPath;
 
   /* The definition for struct word */

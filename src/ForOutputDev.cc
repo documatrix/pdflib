@@ -221,9 +221,6 @@ void ForOutputDev::stroke( GfxState *state )
 
 void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
 {
-  double xMin, yMin, xMax, yMax;
-  state->getUserClipBBox(&xMin, &yMin, &xMax, &yMax);
-
   GfxPath *path = state->getPath( );
   GfxSubpath *subpath;
   double *x, *y;
@@ -303,12 +300,23 @@ void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
       }
 
       /* Set Points (upsite down!)*/
-      current_path->x[ point_nr ] = subpath->getX( sub_nr ) - xMin + clip_x1;
-      current_path->y[ point_nr ] = state->getPageHeight( ) - ( subpath->getY( sub_nr ) - yMin + clip_y1 );
+      current_path->x[ point_nr ] = subpath->getX( sub_nr );
+      current_path->y[ point_nr ] = state->getPageHeight( ) - subpath->getY( sub_nr );
     }
   }
   current_path->object_pos = object_pos;
   current_path->char_pos = char_pos;
+
+  Matrix *m = new Matrix;
+  state->getCTM( m );
+  m->m[ 3 ] *= -1.0;
+  m->m[ 5 ] -= state->getPageHeight( );
+  m->m[ 5 ] *= -1.0;
+
+  for ( int i = 0; i < 6 ; i++ )
+  {
+    current_path->ctm[ i ] = m->m[ i ];
+  }
 
   /* Next */
   path_number ++;

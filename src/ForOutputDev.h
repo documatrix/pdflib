@@ -60,6 +60,8 @@ struct Path
   double *dash_pattern;
   double dash_start;
 
+  double ctm[ 6 ];
+
   int char_pos;
   int object_pos;
   Path *next;

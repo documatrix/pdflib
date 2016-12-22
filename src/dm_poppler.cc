@@ -230,6 +230,11 @@ gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForIm
     path_i->char_pos   = current_path->char_pos;
     path_i->object_pos = current_path->object_pos;
 
+    for ( int i = 0; i < 6; i++ )
+    {
+      path_i->ctm[ i ] = current_path->ctm[ i ];
+    }
+
     current_path = current_path->next;
   }
 

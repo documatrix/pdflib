@@ -100,11 +100,11 @@ namespace PDFLibTests
       {
         found_word_2 = true;
         GLib.assert( word.color.color_space == ForColorSpace.RGB );
-        GLib.assert( word.color.r == 127 );
+        GLib.assert( word.color.r == 128 );
         GLib.assert( word.color.g == 191 );
         GLib.assert( word.color.b == 255 );
         GLib.assert( word.color.alpha == 1.0 );
-        GLib.assert( word.color.get_html_color( ) == "rgb(127,191,255)" );
+        GLib.assert( word.color.get_html_color( ) == "rgb(128,191,255)" );
       }
     }
     GLib.assert( found_word_1 );
