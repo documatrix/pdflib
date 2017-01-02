@@ -216,6 +216,7 @@ namespace DMPoppler
     public double miter_limit;
     public int32 char_pos;
     public int32 object_pos;
+    public double ctm[ 6 ];
   }
 
   [CCode (cname = "ForImage")]
