@@ -229,11 +229,14 @@ namespace PDFLibTests
         foreach ( unowned ForImage img in images )
         {
           stdout.printf( "Image: CharPosition:%d, ObjectPosition:%d\n", img.char_pos, img.object_pos );
-          stdout.printf( "  ID:%d, FilePosition:%lld, Width:%d, Height:%d\n",
+          stdout.printf( "  ID:%d, FilePosition:%lld, Width:%d, Height:%d Rotation:%3.2f, X:%3.2f, Y:%3.2f\n",
             img.id,
             img.file_position,
             img.width,
-            img.height
+            img.height,
+            img.rotation,
+            img.x,
+            img.y
           );
           stdout.printf( "  R:%03u,G:%03u,B:%03u,A:%lf\n",
             img.color.r,

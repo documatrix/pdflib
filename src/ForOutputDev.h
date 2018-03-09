@@ -75,9 +75,12 @@ struct Image
   Color color;
   int width;
   int height;
+  double x;
+  double y;
 
   int char_pos;
   int object_pos;
+  double rotation;
   Image *next;
 };
 

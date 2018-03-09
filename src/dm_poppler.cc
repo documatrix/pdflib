@@ -266,10 +266,13 @@ gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForIm
       image_i->color.alpha = current_image->color.opacity;
       image_i->color.color_space = forDeviceCMYK;
     }
+    image_i->x             = current_image->x;
+    image_i->y             = current_image->y;
     image_i->height        = current_image->height;
     image_i->width         = current_image->width;
     image_i->id            = current_image->id;
     image_i->file_position = current_image->file_pos;
+    image_i->rotation      = current_image->rotation;
 
     PopplerImageMapping *imapping;
     for ( l = mapping; l; l = g_list_next( l ) )
