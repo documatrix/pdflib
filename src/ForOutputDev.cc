@@ -10,6 +10,7 @@
 #include <ForOutputDev.h>
 #include <dm_poppler.h>
 #include <glib.h>
+#include <math.h>
 
 //------------------------------------------------------------------------
 
@@ -18,6 +19,8 @@
 #else
 #define LOG(x)
 #endif
+
+#define PI 3.14159265
 
 //------------------------------------------------------------------------
 // ForOutputDev
@@ -353,6 +356,15 @@ void ForOutputDev::doImage( GfxState *state, Stream *str, int width, int height 
 
   current_image->object_pos = object_pos;
   current_image->char_pos = char_pos;
+
+  Matrix *m = new Matrix;
+  state->getCTM( m );
+  current_image->rotation = atan2( m->m[ 2 ], m->m[ 0 ] ) * 180 / PI;     // Rotation ausrechen
+  current_image->rotation = -current_image->rotation + 360;               // Vorzeichen umdrehen um damit es gegen den Uhrzeigersinn rotiert
+  current_image->rotation = (int)( current_image->rotation + 0.5 ) % 360; // Positiv machen
+
+  current_image->x = m->m[ 4 ];
+  current_image->y = m->m[ 5 ];
 
   /* Next */
   image_nr ++;

@@ -225,8 +225,11 @@ namespace DMPoppler
     public int32 id;
     public int64 file_position;
     public ForColor color;
+    public double x;
+    public double y;
     public int32 height;
     public int32 width;
+    public double rotation;
     public ForRectangle area;
 
     public int32 char_pos;

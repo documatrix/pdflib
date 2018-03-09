@@ -138,6 +138,9 @@ extern "C" {
     ForColor color;
     int width;
     int height;
+    double x;
+    double y;
+    double rotation;
     ForRectangle area;
 
     int char_pos;
