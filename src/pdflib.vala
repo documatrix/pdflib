@@ -19,9 +19,9 @@ namespace PDFLib
     private int32 current_page_nr = 0;
 
     /**
-     * The page conut of the PDF file.
+     * The page count of the PDF file.
      */
-    private int32 page_count = 0;
+    public int32 page_count = 0;
 
     /**
      * Creates a new PDFReader object.
