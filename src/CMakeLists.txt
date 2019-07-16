@@ -10,14 +10,6 @@ configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/sr
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 add_definitions (${DEPS_CFLAGS})
 
-if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
-  include_directories( ${CMAKE_INSTALL_PREFIX}/include/poppler )
-else()
-  include_directories( /usr/include/poppler )
-endif()
-
-include_directories( . )
-
 link_libraries ( ${DEPS_LIBRARIES} )
 link_directories ( ${DEPS_LIBRARY_DIRS} )
 find_package (Vala REQUIRED)
