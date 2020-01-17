@@ -41,6 +41,7 @@ copy_files:
 	${CP} cmake build/
 	${CP} doc build/
 	${CP} src build/
+	${CP} include/* build/src/
 	${CP} tests build/
 	${CP} CMakeLists.txt build/
 	find build/ -name CMakeCache.txt -delete

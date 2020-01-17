@@ -35,6 +35,11 @@ if(${LOG_DEBUG} STREQUAL true)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D LOG_DEBUG")
 endif()
 
+execute_process(COMMAND pkg-config --modversion poppler OUTPUT_VARIABLE POPPLER_VERSION)
+string(REGEX REPLACE "\n$" "" POPPLER_VERSION "${POPPLER_VERSION}")
+execute_process(COMMAND wget -P ${CMAKE_SOURCE_DIR}/src https://gitlab.freedesktop.org/poppler/poppler/raw/poppler-${POPPLER_VERSION}/glib/poppler-private.h)
+execute_process(COMMAND wget -P ${CMAKE_SOURCE_DIR}/src https://gitlab.freedesktop.org/poppler/poppler/raw/poppler-${POPPLER_VERSION}/poppler/CairoOutputDev.h)
+
 add_library(
   ${DM_POPPLER_NAME} SHARED
   ${DM_POPPLER_SOURCES}
