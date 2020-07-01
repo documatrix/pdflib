@@ -10,6 +10,12 @@
 #include <OutputDev.h>
 #include <stdint.h>
 
+#ifndef gTrue
+#define gTrue true
+#define gFalse false
+typedef bool GBool;
+#endif
+
 class PDFDoc;
 class GfxState;
 class GfxPath;
