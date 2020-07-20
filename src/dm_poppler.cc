@@ -83,7 +83,11 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     word->getBBox( &xMinA, &yMinA, &xMaxA, &yMaxA );
 
     word_i = *words + i;
+#if POPPLER_CHECK_VERSION( 0,72,0 )
+    word_i->text = strdup( word->getText( )->c_str( ) );
+#else
     word_i->text = strdup( word->getText( )->getCString( ) );
+#endif
 #if POPPLER_CHECK_VERSION( 0,21,0 )
     GooString* font_name = word->getFontName( 0 );
 #else
@@ -91,7 +95,11 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
 #endif
     if ( font_name != NULL )
     {
+#if POPPLER_CHECK_VERSION( 0,72,0 )
+      word_i->font_name = strdup( font_name->c_str( ) );
+#else
       word_i->font_name = strdup( font_name->getCString( ) );
+#endif
     }
     else
     {
