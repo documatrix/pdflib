@@ -88,7 +88,10 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
 #else
     word_i->text = strdup( word->getText( )->getCString( ) );
 #endif
-#if POPPLER_CHECK_VERSION( 0,21,0 )
+
+#if POPPLER_CHECK_VERSION( 0,83,0 )
+    const GooString* font_name = word->getFontName( 0 );
+#elif POPPLER_CHECK_VERSION( 0,21,0 )
     GooString* font_name = word->getFontName( 0 );
 #else
     GooString* font_name = word->getFontName( );

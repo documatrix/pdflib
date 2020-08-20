@@ -224,8 +224,13 @@ void ForOutputDev::stroke( GfxState *state )
 
 void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
 {
+#if POPPLER_CHECK_VERSION(0, 83, 0)
+  const GfxPath *path = state->getPath( );
+  const GfxSubpath *subpath;
+#else
   GfxPath *path = state->getPath( );
   GfxSubpath *subpath;
+#endif
   double *x, *y;
 
   int points_count = 0;
