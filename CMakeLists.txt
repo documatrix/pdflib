@@ -8,6 +8,7 @@ list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 option(ICON_UPDATE "Update the icon cache after installing" ON)
 option(BUILD_VALADOC "Build API documentation if Valadoc is available" OFF)
 
+
 set( PDFLIB_MAJOR 1 )
 set( PDFLIB_MINOR 0 )
 set( PDFLIB_RELEASE 0 )
@@ -37,6 +38,7 @@ foreach( PKGLIB ${DEPS_LIBRARIES} )
   find_library( _LIB_${PKGLIB} ${PKGLIB} PATHS ${DEPS_LIBRARY_DIRS})
   list( APPEND LIBS ${_LIB_${PKGLIB}} )
 endforeach( PKGLIB )
+
 
 add_definitions (${DEPS_CFLAGS})
 link_directories ( ${DEPS_LIBRARY_DIRS} )

@@ -217,6 +217,12 @@ public:
   void getStrokeColor( GfxState *state );
   void getFillColor( GfxState *state );
 
+  Path* getPathList( );
+  int getPathCount( );
+
+  Image* getImageList( );
+  unsigned int getImageCount( );
+
   // the current document
   PDFDoc *doc;
 

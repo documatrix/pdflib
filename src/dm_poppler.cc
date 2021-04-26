@@ -6,11 +6,11 @@
 //
 //========================================================================
 
+#include <config.h>
 #include <dm_poppler.h>
 
 #include <poppler.h>
 #include <poppler-private.h>
-#include <config.h>
 
 #include <poppler-config.h>
 #include <stdio.h>
@@ -179,11 +179,11 @@ gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForIm
   page->page->display( gfx );
   for_dev->endPage( );
 
-  Path *current_path = for_dev->path_list;
-  int path_number = for_dev->path_number;
+  Path *current_path = for_dev->getPathList( );
+  int path_number = for_dev->getPathCount( );
 
-  Image *current_image = for_dev->image_list;
-  int image_number = for_dev->image_nr;
+  Image *current_image = for_dev->getImageList( );
+  int image_number = for_dev->getImageCount( );
 
   /* no paths and images found */
   if ( path_number == 0 && image_number == 0 )

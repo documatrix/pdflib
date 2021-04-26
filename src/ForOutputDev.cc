@@ -4,6 +4,7 @@
 //
 //========================================================================
 
+#include <config.h>
 #include <GfxState.h>
 #include <GfxFont.h>
 #include <Page.h>
@@ -416,4 +417,24 @@ void ForOutputDev::getFillColor( GfxState *state )
   {
     state->getFillRGB( &current_color_rgb );
   }
+}
+
+Path* ForOutputDev::getPathList( )
+{
+  return path_list;
+}
+
+int ForOutputDev::getPathCount( )
+{
+  return path_number;
+}
+
+Image* ForOutputDev::getImageList( )
+{
+  return image_list;
+}
+
+unsigned int ForOutputDev::getImageCount( )
+{
+  return image_nr;
 }
