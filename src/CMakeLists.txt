@@ -46,7 +46,7 @@ endforeach( CFLAGS )
 
 if(NOT HAVE_CONFIG_H)
   string(REGEX REPLACE "\n$" "" POPPLER_VERSION "${DEPS_poppler_VERSION}")
-  string(REGEX REPLACE "0\\.(3[679]|4[3-9]|5[0-9]|60|61)\\.0" "0.${CMAKE_MATCH_1}" POPPLER_VERSION "${POPPLER_VERSION}")
+  string(REGEX REPLACE "0\\.(3[679]|4[3-9]|5[0-9]|60|61)\\.0" "0.\\1" POPPLER_VERSION "${POPPLER_VERSION}")
   execute_process(COMMAND wget -P ${CMAKE_SOURCE_DIR}/src https://gitlab.freedesktop.org/poppler/poppler/raw/poppler-${POPPLER_VERSION}/glib/poppler-private.h)
   execute_process(COMMAND wget -P ${CMAKE_SOURCE_DIR}/src https://gitlab.freedesktop.org/poppler/poppler/raw/poppler-${POPPLER_VERSION}/poppler/CairoOutputDev.h)
   file(RENAME ${CMAKE_SOURCE_DIR}/src/config_template.h ${CMAKE_SOURCE_DIR}/src/config.h)
