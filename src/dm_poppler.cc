@@ -59,7 +59,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
   page->page->display( gfx );
   text_dev->endPage( );
 
-  TextWordList *wordlist = text_dev->makeWordList( );
+  std::unique_ptr<TextWordList> wordlist = text_dev->makeWordList( );
   const int word_length = wordlist != NULL ? wordlist->getLength( ) : 0;
 
   /* no word found */
@@ -134,7 +134,6 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
 
     word_i->rotation = ( 360 - ( word->getRotation( ) * 90 ) ) % 360;
   }
-  delete wordlist;
   delete gfx;
   delete text_dev;
 
