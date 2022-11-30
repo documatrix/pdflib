@@ -250,10 +250,18 @@ void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
   current_path->miter_limit = state->getMiterLimit( );
 
   /* LineDash */
-  double *dashPattern;
   int dashLength;
   double dashStart;
+#if POPPLER_CHECK_VERSION(22, 9, 0)
+  const double *dashPattern;
+  const std::vector<double> &dash = state->getLineDash(&dashStart);
+  dashPattern = dash.data();
+  dashLength = dash.size();
+#else
+  double *dashPattern;
   state->getLineDash(&dashPattern, &dashLength, &dashStart);
+#endif
+
   current_path->dash_length  = dashLength;
   current_path->dash_pattern = (double*)malloc( dashLength * sizeof( double ) );
   for ( int i = 0; i < dashLength; ++i )
