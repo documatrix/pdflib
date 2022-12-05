@@ -27,7 +27,7 @@ struct GfxRGB;
 //------------------------------------------------------------------------
 
 /* The different color spaces */
-enum FColorSpace
+enum ForColorSpace
 {
   deviceRGB,
   deviceCMYK
@@ -47,7 +47,7 @@ struct Color
 
   double opacity;
 
-  FColorSpace color_space;
+  ForColorSpace color_space;
 };
 
 /* The definition for struct Line */
