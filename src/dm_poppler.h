@@ -14,13 +14,13 @@
 #ifndef DM_POPPLER_H
 #define DM_POPPLER_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <poppler.h>
 #include <poppler-page.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
   /* The different color spaces */
   enum _ForColorSpace
