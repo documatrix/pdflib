@@ -8,6 +8,7 @@
 #define FOROUTPUTDEV_H
 
 #include <OutputDev.h>
+#include <poppler-features.h>
 #include <stdint.h>
 
 #ifndef gTrue
@@ -102,62 +103,80 @@ public:
 
   // Does this device use upside-down coordinates?
   // (Upside-down means (0,0) is the top left corner of the page.)
-  virtual GBool upsideDown( ) { return gTrue; }
+  GBool upsideDown( ) override { return gTrue; }
 
   // Does this device use drawChar() or drawString()?
-  virtual GBool useDrawChar( ) { return gTrue; }
+  GBool useDrawChar( ) override { return gTrue; }
 
   // Does this device use beginType3Char/endType3Char?  Otherwise,
   // text in Type 3 fonts will be drawn with drawChar/drawString.
-  virtual GBool interpretType3Chars( ) { return gFalse; }
+  GBool interpretType3Chars( ) override { return gFalse; }
 
-  virtual GBool needCharCount() { return gTrue; }
+  bool needCharCount() override { return true; }
 
  // Does this device use tilingPatternFill()?  If this returns false,
   // tiling pattern fills will be reduced to a series of other drawing
   // operations.
-  virtual GBool useTilingPatternFill() { return gFalse; }
+  GBool useTilingPatternFill() override { return gFalse; }
 
   // Does this device need to clip pages to the crop box even when the
   // box is the crop box?
-  virtual GBool needClipToCropBox() { return gTrue; }
+  GBool needClipToCropBox() override { return gTrue; }
 
   //----- initialization and control
 
   // Start a page.
-  virtual void startPage( int pageNum, GfxState *state );
+#if POPPLER_CHECK_VERSION(0, 23, 0)
+  void startPage(int pageNum, GfxState *state, XRef *xref) override;
+#else
+  void startPage( int pageNum, GfxState *state ) override;
+#endif
 
   // End a page.
-  virtual void endPage( );
+  void endPage( ) override;
 
   //----- save/restore graphics state
-  virtual void restoreState(GfxState *state);
+  void restoreState(GfxState *state)  override;
 
   //----- update text state
-  virtual void updateFont(GfxState *state);
+  void updateFont(GfxState *state) override;
 
   //----- text drawing
-  virtual void beginString(GfxState *state, GooString *s);
-  virtual void endString(GfxState *state);
-  virtual void drawChar(GfxState *state, double x, double y,
+#if POPPLER_CHECK_VERSION(0, 64, 0)
+  void beginString(GfxState *state, const GooString *s) override;
+#else
+  void beginString(GfxState *state, GooString *s) override;
+#endif
+
+  void endString(GfxState *state) override;
+
+#if POPPLER_CHECK_VERSION(0, 82, 0)
+  void drawChar(GfxState *state, double x, double y,
                         double dx, double dy,
                         double originX, double originY,
-                        CharCode c, int nBytes, Unicode *u, int uLen);
+                        CharCode c, int nBytes, const Unicode *u, int uLen) override;
+#else
+  void drawChar(GfxState *state, double x, double y,
+                        double dx, double dy,
+                        double originX, double originY,
+                        CharCode c, int nBytes, Unicode *u, int uLen) override;
+#endif
 
-  virtual void incCharCount(int nChars);
-  virtual void beginActualText(GfxState *state, GooString *text);
-  virtual void endActualText(GfxState *state);
+  void incCharCount(int nChars) override;
+
+  void beginActualText(GfxState *state, const GooString *text) override;
+  void endActualText(GfxState *state) override;
 
   //----- Image painting
-  virtual void drawImageMask(GfxState *state, Object *ref, Stream *str,
+  void drawImageMask(GfxState *state, Object *ref, Stream *str,
                              int width, int height, GBool invert, GBool interpolate,
-                             GBool inlineImg);
+                             GBool inlineImg) override;
 
-  virtual void setSoftMaskFromImageMask(GfxState *state,
+  void setSoftMaskFromImageMask(GfxState *state,
                                         Object *ref, Stream *str,
                                         int width, int height, GBool invert,
-                                        GBool inlineImg, double *baseMatrix);
-  virtual void unsetSoftMaskFromImageMask(GfxState *state, double *baseMatrix);
+                                        GBool inlineImg, double *baseMatrix) override;
+  void unsetSoftMaskFromImageMask(GfxState *state, double *baseMatrix) override;
 
   void drawImageMaskPrescaled(GfxState *state, Object *ref, Stream *str,
                               int width, int height, GBool invert, GBool interpolate,
@@ -167,51 +186,53 @@ public:
                             int width, int height, GBool invert, GBool interpolate,
                             GBool inlineImg);
 
-  virtual void drawImage(GfxState *state, Object *ref, Stream *str,
-                         int width, int height, GfxImageColorMap *colorMap,
-                         GBool interpolate, int *maskColors, GBool inlineImg);
+#if POPPLER_CHECK_VERSION(0, 82, 0)
+  void drawImage(GfxState *state, Object *ref, Stream *str, int width, int height, GfxImageColorMap *colorMap, bool interpolate, const int *maskColors, bool inlineImg) override;
+#else
+  void drawImage(GfxState *state, Object *ref, Stream *str, int width, int height, GfxImageColorMap *colorMap, GBool interpolate, int *maskColors, GBool inlineImg) override;
+#endif
 
-  virtual void drawSoftMaskedImage(GfxState *state, Object *ref, Stream *str,
+  void drawSoftMaskedImage(GfxState *state, Object *ref, Stream *str,
                                    int width, int height,
                                    GfxImageColorMap *colorMap,
                                    GBool interpolate,
                                    Stream *maskStr,
                                    int maskWidth, int maskHeight,
                                    GfxImageColorMap *maskColorMap,
-                                   GBool maskInterpolate);
+                                   GBool maskInterpolate) override;
 
-  virtual void drawMaskedImage(GfxState *state, Object *ref, Stream *str,
+  void drawMaskedImage(GfxState *state, Object *ref, Stream *str,
                                int width, int height,
                                GfxImageColorMap *colorMap,
                                GBool interpolate,
                                Stream *maskStr,
                                int maskWidth, int maskHeight,
-                               GBool maskInvert, GBool maskInterpolate);
+                               GBool maskInvert, GBool maskInterpolate) override;
 
-  virtual GBool tilingPatternFill(GfxState *state, Gfx *gfx, Catalog *cat, Object *str,
-                                  double *pmat, int paintType, int tilingType, Dict *resDict,
-                                  double *mat, double *bbox,
-                                  int x0, int y0, int x1, int y1,
-                                  double xStep, double yStep);
+  // GBool tilingPatternFill(GfxState *state, Gfx *gfx, Catalog *cat, Object *str,
+  //                                 double *pmat, int paintType, int tilingType, Dict *resDict,
+  //                                 double *mat, double *bbox,
+  //                                 int x0, int y0, int x1, int y1,
+  //                                 double xStep, double yStep) override;
 
-  virtual GBool patchMeshShadedFill(GfxState *state, GfxPatchMeshShading *shading);
+  GBool patchMeshShadedFill(GfxState *state, GfxPatchMeshShading *shading) override;
 
-  virtual GBool gouraudTriangleShadedFill(GfxState *state, GfxGouraudTriangleShading *shading);
+  GBool gouraudTriangleShadedFill(GfxState *state, GfxGouraudTriangleShading *shading) override;
 
   //----- path painting
-  virtual void stroke( GfxState *state );
-  virtual void fill( GfxState *state );
-  virtual void eoFill( GfxState *state );
+  void stroke( GfxState *state ) override;
+  void fill( GfxState *state ) override;
+  void eoFill( GfxState *state ) override;
 
   //----- path clipping
-  virtual void clip( GfxState *state );
-  virtual void eoClip(GfxState *state);
+  void clip( GfxState *state ) override;
+  void eoClip(GfxState *state) override;
 
   //----- save path
-  virtual void doPath( GfxState *state, int fill );
+  void doPath( GfxState *state, int fill );
 
   //----- save image
-  virtual void doImage( GfxState *state, Stream *str, int width, int height );
+  void doImage( GfxState *state, Stream *str, int width, int height );
 
   //----- get colors
   void getStrokeColor( GfxState *state );
