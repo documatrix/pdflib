@@ -50,6 +50,7 @@ if(NOT HAVE_CONFIG_H)
   execute_process(COMMAND wget -P ${CMAKE_SOURCE_DIR}/src https://gitlab.freedesktop.org/poppler/poppler/raw/poppler-${POPPLER_VERSION}/glib/poppler-private.h)
   execute_process(COMMAND wget -P ${CMAKE_SOURCE_DIR}/src https://gitlab.freedesktop.org/poppler/poppler/raw/poppler-${POPPLER_VERSION}/poppler/CairoOutputDev.h)
   execute_process(COMMAND wget -P ${CMAKE_SOURCE_DIR}/src https://gitlab.freedesktop.org/poppler/poppler/raw/poppler-${POPPLER_VERSION}/poppler/SignatureInfo.h)
+  execute_process(COMMAND wget -P ${CMAKE_SOURCE_DIR}/src https://gitlab.freedesktop.org/poppler/poppler/raw/poppler-${POPPLER_VERSION}/poppler/HashAlgorithm.h)
   file(RENAME ${CMAKE_SOURCE_DIR}/src/config_template.h ${CMAKE_SOURCE_DIR}/src/config.h)
 endif()
 
