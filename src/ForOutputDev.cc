@@ -51,7 +51,11 @@ ForOutputDev::~ForOutputDev()
 {
 }
 
+#if POPPLER_CHECK_VERSION(0, 23, 0)
+void ForOutputDev::startPage( int pageNum, GfxState *state, XRef *xref )
+#else
 void ForOutputDev::startPage( int pageNum, GfxState *state )
+#endif
 {
   LOG( printf( "startPage\n" ) );
   char_pos = 0;
@@ -76,7 +80,11 @@ void ForOutputDev::updateFont(GfxState *state)
 {
 }
 
+#if POPPLER_CHECK_VERSION(0, 64, 0)
+void ForOutputDev::beginString(GfxState *state, const GooString *s)
+#else
 void ForOutputDev::beginString(GfxState *state, GooString *s)
+#endif
 {
 }
 
@@ -84,7 +92,11 @@ void ForOutputDev::endString(GfxState *state)
 {
 }
 
+#if POPPLER_CHECK_VERSION(0, 82, 0)
+void ForOutputDev::beginActualText(GfxState *state, const GooString *text)
+#else
 void ForOutputDev::beginActualText(GfxState *state, GooString *text)
+#endif
 {
 }
 
@@ -92,11 +104,17 @@ void ForOutputDev::endActualText(GfxState *state)
 {
 }
 
-
+#if POPPLER_CHECK_VERSION(0, 82, 0)
+void ForOutputDev::drawChar( GfxState *state, double x, double y,
+                             double dx, double dy,
+                             double originX, double originY,
+                             CharCode c, int nBytes, const Unicode *u, int uLen )
+#else
 void ForOutputDev::drawChar( GfxState *state, double x, double y,
                              double dx, double dy,
                              double originX, double originY,
                              CharCode c, int nBytes, Unicode *u, int uLen )
+#endif
 {
   char_pos += nBytes;
   object_pos = 0;
@@ -144,9 +162,15 @@ void ForOutputDev::drawImageMaskPrescaled(GfxState *state, Object *ref, Stream *
   LOG( printf( "drawImageMaskPrescaled\n" ) );
 }
 
+#if POPPLER_CHECK_VERSION(0, 82, 0)
+void ForOutputDev::drawImage(GfxState *state, Object *ref, Stream *str,
+                            int width, int height, GfxImageColorMap *colorMap,
+                            GBool interpolate, const int *maskColors, GBool inlineImg)
+#else
 void ForOutputDev::drawImage(GfxState *state, Object *ref, Stream *str,
                             int width, int height, GfxImageColorMap *colorMap,
                             GBool interpolate, int *maskColors, GBool inlineImg)
+#endif
 {
   current_opacity = state->getFillOpacity( );
   doImage( state, str, width, height );
@@ -176,23 +200,25 @@ void ForOutputDev::drawMaskedImage(GfxState *state, Object *ref, Stream *str,
   LOG( printf( "drawMaskedImage\n" ) );
 }
 
-GBool ForOutputDev::tilingPatternFill(GfxState *state, Gfx *gfxA, Catalog *cat, Object *str,
-          double *pmat, int paintType, int /*tilingType*/, Dict *resDict,
-          double *mat, double *bbox,
-          int x0, int y0, int x1, int y1,
-          double xStep, double yStep)
-{
-  LOG( printf( "tilingPatternFill\n" ) );
-}
+// GBool ForOutputDev::tilingPatternFill(GfxState *state, Gfx *gfxA, Catalog *cat, Object *str,
+//           double *pmat, int paintType, int /*tilingType*/, Dict *resDict,
+//           double *mat, double *bbox,
+//           int x0, int y0, int x1, int y1,
+//           double xStep, double yStep)
+// {
+//   LOG( printf( "tilingPatternFill\n" ) );
+// }
 
 GBool ForOutputDev::patchMeshShadedFill(GfxState *state, GfxPatchMeshShading *shading)
 {
   LOG( printf( "patchMeshShadedFill\n" ) );
+  return false;
 }
 
 GBool ForOutputDev::gouraudTriangleShadedFill(GfxState *state, GfxGouraudTriangleShading *shading)
 {
   LOG( printf( "gouraudTriangleShadedFill\n" ) );
+  return false;
 }
 
 void ForOutputDev::clip( GfxState *state )
@@ -250,10 +276,18 @@ void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
   current_path->miter_limit = state->getMiterLimit( );
 
   /* LineDash */
-  double *dashPattern;
   int dashLength;
   double dashStart;
+#if POPPLER_CHECK_VERSION(22, 9, 0)
+  const double *dashPattern;
+  const std::vector<double> &dash = state->getLineDash(&dashStart);
+  dashPattern = dash.data();
+  dashLength = dash.size();
+#else
+  double *dashPattern;
   state->getLineDash(&dashPattern, &dashLength, &dashStart);
+#endif
+
   current_path->dash_length  = dashLength;
   current_path->dash_pattern = (double*)malloc( dashLength * sizeof( double ) );
   for ( int i = 0; i < dashLength; ++i )
