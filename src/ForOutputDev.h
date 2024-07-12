@@ -164,7 +164,7 @@ public:
 
   void incCharCount(int nChars) override;
 
-#if POPPLER_CHECK_VERSION(0, 90, 1)
+#if POPPLER_CHECK_VERSION(0, 64, 0)
   void beginActualText(GfxState *state, const GooString *text) override;
 #else
   void beginActualText(GfxState *state, GooString *text) override;
