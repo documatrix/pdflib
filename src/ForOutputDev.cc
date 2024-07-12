@@ -92,7 +92,7 @@ void ForOutputDev::endString(GfxState *state)
 {
 }
 
-#if POPPLER_CHECK_VERSION(0, 82, 0)
+#if POPPLER_CHECK_VERSION(0, 90, 1)
 void ForOutputDev::beginActualText(GfxState *state, const GooString *text)
 #else
 void ForOutputDev::beginActualText(GfxState *state, GooString *text)
