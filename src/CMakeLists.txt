@@ -3,6 +3,7 @@ set (PKGDATADIR "${DATADIR}/pdflib")
 set (GETTEXT_PACKAGE "pdflib")
 set (CMAKE_C_FLAGS "-g -O3")
 set (CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS})
+set (CMAKE_CXX_STANDARD 20)
 set (PREFIX ${CMAKE_INSTALL_PREFIX})
 set (DOLLAR "$")
 
