@@ -1,8 +1,13 @@
 ### CMakeLists automatically created with AutoVala
 ### Do not edit
 
-cmake_minimum_required (VERSION 3.3)
-cmake_policy (VERSION 3.3)
+if(CMAKE_VERSION VERSION_LESS "3.3.0")
+	cmake_minimum_required (VERSION 2.6)
+	cmake_policy (VERSION 2.8)
+else()
+	cmake_minimum_required (VERSION 3.3)
+	cmake_policy (VERSION 3.3)
+endif()
 project (pdflib)
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 option(ICON_UPDATE "Update the icon cache after installing" ON)
