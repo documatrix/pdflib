@@ -45,7 +45,11 @@
 gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
 {
   TextOutputDev *text_dev;
+#if POPPLER_CHECK_VERSION(24, 12, 0)
+  std::unique_ptr<Gfx> gfx;
+#else
   Gfx *gfx;
+#endif
 
   text_dev = new TextOutputDev( NULL, gTrue, 0, gFalse, gFalse );
   gfx = page->page->createGfx( text_dev,
@@ -53,10 +57,18 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
                                gFalse, /* useMediaBox */
                                gTrue, /* Crop */
                                -1, -1, -1, -1,
+#if POPPLER_CHECK_VERSION(24, 10, 0)
+#else
                                gFalse, /* printing */
+#endif
                                NULL, NULL );
 
+#if POPPLER_CHECK_VERSION(24, 12, 0)
+  page->page->display( gfx.get() );
+#else
   page->page->display( gfx );
+#endif
+
   text_dev->endPage( );
 #if POPPLER_CHECK_VERSION(21, 10, 0)
   std::unique_ptr<TextWordList> wordlist = text_dev->makeWordList( );
@@ -141,7 +153,13 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
 #else
   delete wordlist;
 #endif
+
+#if POPPLER_CHECK_VERSION(24, 12, 0)
+  gfx.reset(); // deletion order here is important, gfx before text_dev
+#else
   delete gfx;
+#endif
+
   delete text_dev;
 
   return gTrue;
@@ -165,7 +183,11 @@ gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForIm
 {
   ForOutputDev *for_dev;
   TextOutputDev *text_dev;
+#if POPPLER_CHECK_VERSION(24, 12, 0)
+  std::unique_ptr<Gfx> gfx;
+#else
   Gfx *gfx;
+#endif
   GError *error;
 
   GList *mapping, *l;
@@ -178,11 +200,19 @@ gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForIm
                                gFalse, /* useMediaBox */
                                gTrue,  /* Crop */
                                -1, -1, -1, -1,
+#if POPPLER_CHECK_VERSION(24, 10, 0)
+#else
                                gFalse, /* printing */
+#endif
                                NULL, NULL
                              );
 
+#if POPPLER_CHECK_VERSION(24, 12, 0)
+  page->page->display( gfx.get() );
+#else
   page->page->display( gfx );
+#endif
+
   for_dev->endPage( );
 
   Path *current_path = for_dev->getPathList( );
