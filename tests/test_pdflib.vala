@@ -43,6 +43,7 @@ namespace PDFLibTests
         GLib.assert( (int32)word.x2 == 481 );
         GLib.assert( (int32)word.y2 == 514 );
         GLib.assert( (int32)word.edges[ 0 ] == 454 );
+        GLib.assert( (int32)word.edges[ word.edges.length - 1 ] == 481 );
         GLib.assert( (int32)word.baseline == 512 );
         GLib.assert( (int32)word.font_size == 10 );
         GLib.assert( word.font_name == "Helvetica" );
@@ -56,6 +57,7 @@ namespace PDFLibTests
         GLib.assert( (int32)word.x2 == 104 );
         GLib.assert( (int32)word.y2 == 775 );
         GLib.assert( (int32)word.edges[ 0 ] == 775 );
+        GLib.assert( (int32)word.edges[ word.edges.length - 1 ] == 750 );
         GLib.assert( (int32)word.baseline == 102 );
         GLib.assert( (int32)word.font_size == 10 );
         GLib.assert( word.font_name == "Helvetica" );

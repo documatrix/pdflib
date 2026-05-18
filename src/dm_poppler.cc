@@ -89,9 +89,17 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
 
     word_i = *words + i;
 #if POPPLER_CHECK_VERSION( 0,72,0 )
-    { GooString *gs = word->getText( ); word_i->text = strdup( gs->c_str( ) ); delete gs; }
+    {
+      GooString *gs = word->getText( );
+      word_i->text = strdup( gs->c_str( ) );
+      delete gs;
+    }
 #else
-    { GooString *gs = word->getText( ); word_i->text = strdup( gs->getCString( ) ); delete gs; }
+    {
+      GooString *gs = word->getText( );
+      word_i->text = strdup( gs->getCString( ) );
+      delete gs;
+    }
 #endif
 
 #if POPPLER_CHECK_VERSION( 0,83,0 )
@@ -111,7 +119,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     }
     else
     {
-      word_i->font_name = NULL;
+      word_i->font_name = strdup( "" );
     }
     word_i->x1 = xMinA;
     word_i->y1 = yMinA;
@@ -121,7 +129,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     word_i->baseline = word->getBaseline( );
 
     word_i->char_count = word->getLength( );
-    word_i->edge_count = word_i->char_count;
+    word_i->edge_count = word_i->char_count + 1;
     word_i->edges = (double*)malloc( word_i->edge_count * sizeof( double ) );
     for ( int i = 0; i < word_i->edge_count; i ++ )
     {
