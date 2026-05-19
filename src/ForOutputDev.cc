@@ -40,15 +40,35 @@ ForOutputDev::ForOutputDev()
 
   path_number = 0;
   path_list = new Path;
+  path_list->next = NULL;
   current_path = path_list;
 
   image_nr = 0;
   image_list = new Image;
+  image_list->next = NULL;
   current_image = image_list;
 }
 
 ForOutputDev::~ForOutputDev()
 {
+  /* Free path linked-list nodes. x, y, command, dash_pattern are owned
+     by the caller (transferred by get_elements), so we do not free them here. */
+  Path *p = path_list;
+  while ( p != NULL )
+  {
+    Path *next = p->next;
+    delete p;
+    p = next;
+  }
+
+  /* Free image linked-list nodes. */
+  Image *img = image_list;
+  while ( img != NULL )
+  {
+    Image *next = img->next;
+    delete img;
+    img = next;
+  }
 }
 
 #if POPPLER_CHECK_VERSION(0, 23, 0)
@@ -360,11 +380,13 @@ void ForOutputDev::doPath( GfxState *state, int path_painting_operator )
   {
     current_path->ctm[ i ] = m->m[ i ];
   }
+  delete m;
 
   /* Next */
   path_number ++;
   object_pos ++;
   current_path->next = new Path;
+  current_path->next->next = NULL;
   current_path = current_path->next;
 }
 
@@ -405,11 +427,13 @@ void ForOutputDev::doImage( GfxState *state, Stream *str, int width, int height 
 
   current_image->x = m->m[ 4 ];
   current_image->y = m->m[ 5 ];
+  delete m;
 
   /* Next */
   image_nr ++;
   object_pos ++;
   current_image->next = new Image;
+  current_image->next->next = NULL;
   current_image = current_image->next;
 }
 

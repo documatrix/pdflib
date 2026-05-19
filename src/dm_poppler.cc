@@ -80,6 +80,8 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
   /* no word found */
   if ( word_length == 0 )
   {
+    delete gfx;
+    delete text_dev;
     return gFalse;
   }
 
@@ -99,9 +101,17 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
 
     word_i = *words + i;
 #if POPPLER_CHECK_VERSION( 0,72,0 )
-    word_i->text = strdup( word->getText( )->c_str( ) );
+    {
+      GooString *gs = word->getText( );
+      word_i->text = strdup( gs->c_str( ) );
+      delete gs;
+    }
 #else
-    word_i->text = strdup( word->getText( )->getCString( ) );
+    {
+      GooString *gs = word->getText( );
+      word_i->text = strdup( gs->getCString( ) );
+      delete gs;
+    }
 #endif
 
 #if POPPLER_CHECK_VERSION( 0,83,0 )
@@ -121,7 +131,7 @@ gboolean get_words( PopplerPage *page, Word** words, guint *n_words )
     }
     else
     {
-      word_i->font_name = "";
+      word_i->font_name = strdup( "" );
     }
     word_i->x1 = xMinA;
     word_i->y1 = yMinA;
@@ -170,6 +180,7 @@ void dm_poppler_word_destroy( Word *word )
 {
   free( (void*)word->text );
   free( (void*)word->edges );
+  free( (void*)word->font_name );
 }
 
 /**
@@ -224,6 +235,9 @@ gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForIm
   /* no paths and images found */
   if ( path_number == 0 && image_number == 0 )
   {
+    delete gfx;
+    delete for_dev;
+    poppler_page_free_image_mapping( mapping );
     return gFalse;
   }
 
@@ -345,6 +359,10 @@ gboolean get_elements( PopplerPage *page, ForPath **paths, guint *n_paths, ForIm
     current_image = current_image->next;
   }
 
+  delete gfx;
+  delete for_dev;
+  poppler_page_free_image_mapping( mapping );
+
   return gTrue;
 }
 
@@ -358,6 +376,6 @@ void dm_poppler_for_path_destroy( ForPath *path )
 }
 
 /* The destroy funtion of the struct image -> no memoryleak */
-void dm_poppler_for_image_destroy( Image *img )
+void dm_poppler_for_image_destroy( ForImage *img )
 {
 }
